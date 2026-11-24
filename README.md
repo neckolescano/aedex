@@ -6,6 +6,8 @@ Point a phone at a yard or street, and Aedex draws a box around every container 
 
 New to the project? Read [BUILD-WALKTHROUGH.md](BUILD-WALKTHROUGH.md): it explains how every part was built and why.
 
+**Team tasks:** [Member 1, model](docs/tasks/member-1-model.md) · [Member 2, Pail-Basin data](docs/tasks/member-2-pail-basin-data.md) · [Member 3, hotspot map](docs/tasks/member-3-hotspot-map.md). Working with an AI assistant? It reads [CLAUDE.md](CLAUDE.md) first, so just tell it which member you are.
+
 ## Where the project is
 
 | Step | What | Status |
