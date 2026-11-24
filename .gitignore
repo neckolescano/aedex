@@ -1,0 +1,33 @@
+# Big files live in Roboflow / Google Drive, not GitHub
+datasets/
+photos/
+models/
+runs/
+*.pt
+*.onnx
+*.tflite
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Flutter (when app/ exists)
+app/build/
+app/.dart_tool/
+
+# Personal files kept in this folder that are not part of Aedex
+Case Study - Scenario 5 - IT Startup.docx
+case-study-builder-fields.md
+topology-reference.png
+sagap-plan-prompt.md
+app-ideas-notes.md
+neuro-circuit/
+learning-circuit/
+
+# OS clutter
+Thumbs.db
+.DS_Store

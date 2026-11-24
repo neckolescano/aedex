@@ -1,0 +1,46 @@
+Dataset: datasets\vistext\Breeding Place Detection.zip
+
+Config file: Breeding Place Detection/data.yaml
+Classes (5), in label-number order:
+  0 = Bottle
+  1 = Coconut-Exocarp
+  2 = Drain-Inlet
+  3 = Tire
+  4 = Vase
+
+Export notes (from README.roboflow.txt):
+  The dataset includes 4425 images.
+  Breeding-Place are annotated in YOLOv9 format.
+  The following pre-processing was applied to each image:
+  * Auto-orientation of pixel data (with EXIF-orientation stripping)
+  * Resize to 640x640 (Stretch)
+  The following augmentation was applied to create 3 versions of each source image:
+  * Random brigthness adjustment of between -24 and +24 percent
+
+Images: 4425
+  train   3871 images (87.5%)     8125 boxes   [empty label (background): 36, polygon outlines (used as boxes): 150]
+  valid    371 images ( 8.4%)      731 boxes   [polygon outlines (used as boxes): 7, empty label (background): 1]
+  test     183 images ( 4.1%)      424 boxes   [polygon outlines (used as boxes): 4, empty label (background): 1]
+
+Boxes per class (images containing it in brackets):
+  class                        train           valid            test     total
+  Bottle               1194 [  666]    100 [   59]     50 [   27]      1344  14.5%
+  Coconut-Exocarp      1939 [ 1031]    171 [   92]    101 [   51]      2211  23.8%
+  Drain-Inlet          1164 [ 1023]    135 [  110]     54 [   48]      1353  14.6%
+  Tire                 1635 [  627]    119 [   62]    115 [   30]      1869  20.1%
+  Vase                 2193 [ 1035]    206 [   92]    104 [   47]      2503  27.0%
+
+Original photos: 1846   (files that are copies of the same photo: 3879 in 1300 groups)
+  Copies per photo: 2 files x 31 photos, 3 files x 1263 photos, 4 files x 4 photos, 6 files x 2 photos
+  WARNING data leakage: 6 photos appear in more than one split, e.g.
+    IMG_20240701_124038_jpg: test, train
+    IMG_20240701_124344_jpg: test, valid
+    IMG_20240701_124428_jpg: test, train
+    IMG_20240701_124651_jpg: test, valid
+    IMG_20240701_124311_jpg: train, valid
+
+Possible problems:
+  tiny box (< 0.05% of the image): 92
+      e.g. Breeding Place Detection/test/labels/20240701_125342-0-_jpg.rf.5762d1de4765165316d2e3d743938516.txt  (Vase)
+      e.g. Breeding Place Detection/test/labels/20240701_125444-1-_jpg.rf.cb9515cfbffdb88523b0ef4d853afd46.txt  (Vase)
+      e.g. Breeding Place Detection/test/labels/20240701_153440_jpg.rf.1c0bb7e6f12c10e1c88c803f0b55327f.txt  (Bottle)

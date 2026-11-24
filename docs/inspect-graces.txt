@@ -1,0 +1,45 @@
+Dataset: datasets\graces\grace-s.v1i.yolov11.zip
+
+Config file: data.yaml
+Classes (6), in label-number order:
+  0 = Container
+  1 = Cup
+  2 = Larva   <- will be dropped
+  3 = Pail
+  4 = Pot
+  5 = Tire
+
+Export notes (from README.roboflow.txt):
+  The dataset includes 1681 images.
+  Mos-Site-uY6b are annotated in YOLOv11 format.
+  The following pre-processing was applied to each image:
+  No image augmentation techniques were applied.
+
+Images: 1681
+  train   1410 images (83.9%)     4875 boxes   [empty label (background): 1]
+  valid    171 images (10.2%)      255 boxes
+  test     100 images ( 5.9%)      137 boxes
+
+Boxes per class (images containing it in brackets):
+  class                        train           valid            test     total
+  Container              64 [   62]     39 [   39]     15 [   15]       118   2.2%
+  Cup                    52 [   52]     35 [   35]     22 [   22]       109   2.1%
+  Larva                4404 [ 1038]    114 [   30]     60 [   23]      4578  86.9%  (dropped)
+  Pail                   20 [   20]      9 [    9]      7 [    7]        36   0.7%
+  Pot                   170 [   72]      4 [    4]      2 [    2]       176   3.3%
+  Tire                  165 [  165]     54 [   54]     31 [   31]       250   4.7%
+
+Original photos: 1681   (files that are copies of the same photo: 0 in 0 groups)
+  No photo appears in more than one split (no leakage between train/valid/test).
+
+After dropping Larva: images left with NO boxes:
+  train   1038
+  valid     30
+  test      23
+  These images would teach the model 'nothing here'. Relabel them or remove them.
+
+Possible problems:
+  tiny box (< 0.05% of the image): 266
+      e.g. test/labels/IMG20250425162304_jpg.rf.5f54d5748d3016fe6ce200fb54ca5d26.txt  (Larva)
+      e.g. test/labels/IMG20250425162304_jpg.rf.5f54d5748d3016fe6ce200fb54ca5d26.txt  (Larva)
+      e.g. test/labels/IMG20250425162858_jpg.rf.d4b2b640096fb071b9a1a9f737ce1132.txt  (Larva)

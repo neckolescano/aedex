@@ -1,0 +1,36 @@
+Dataset: datasets\merged\v1
+
+Config file: data.yaml
+Classes (7), in label-number order:
+  0 = Bottle
+  1 = Coconut-Exocarp
+  2 = Drain-Inlet
+  3 = Tire
+  4 = Vase
+  5 = Cup
+  6 = Plastic-Container
+
+Images: 4979
+  train   4321 images (86.8%)     8667 boxes   [empty label (background): 37]
+  valid    423 images ( 8.5%)      783 boxes   [empty label (background): 1]
+  test     235 images ( 4.7%)      483 boxes   [empty label (background): 1]
+
+Boxes per class (images containing it in brackets):
+  class                        train           valid            test     total
+  Bottle               1196 [  668]     98 [   57]     50 [   27]      1344  13.5%
+  Coconut-Exocarp      1939 [ 1031]    171 [   92]    101 [   51]      2211  22.3%
+  Drain-Inlet          1165 [ 1024]    135 [  110]     53 [   47]      1353  13.6%
+  Tire                 1835 [  827]    144 [   87]    140 [   55]      2119  21.3%
+  Vase                 2351 [ 1103]    212 [   97]    116 [   52]      2679  27.0%
+  Cup                    87 [   87]     11 [   11]     11 [   11]       109   1.1%
+  Plastic-Container      94 [   92]     12 [   12]     12 [   12]       118   1.2%
+
+Original photos: 2400   (files that are copies of the same photo: 3879 in 1300 groups)
+  Copies per photo: 2 files x 31 photos, 3 files x 1263 photos, 4 files x 4 photos, 6 files x 2 photos
+  No photo appears in more than one split (no leakage between train/valid/test).
+
+Possible problems:
+  tiny box (< 0.05% of the image): 92
+      e.g. test/labels/vistext__20240701_125342-0-_jpg_51f01da7.rf.24ad9fa1.txt  (Vase)
+      e.g. test/labels/vistext__20240701_125444-1-_jpg_93204516.rf.8298f699.txt  (Vase)
+      e.g. test/labels/vistext__20240701_153440_jpg_acf67aa2.rf.d1d8019f.txt  (Bottle)
