@@ -14,8 +14,8 @@ New to the project? Read [BUILD-WALKTHROUGH.md](BUILD-WALKTHROUGH.md): it explai
 |---|---|---|
 | 1 | Data: starter dataset chosen, license checked | Done |
 | 2 | Inspect and merge the datasets | Done: `datasets/merged/v1` (7 classes, 4,979 images); our own photos still being collected |
-| 3 | Train a first model | Notebooks built for Colab and Kaggle; first run in progress on Kaggle |
-| 4 | Improve: find misses, add photos, retrain | After step 3 |
+| 3 | Train a first model | Done: model v1, test recall 0.735, mAP50 0.799 (scores in [docs/results.md](docs/results.md)) |
+| 4 | Improve: find misses, add photos, retrain | In progress: dataset v2 adds Pail-Basin and more Cup and Plastic-Container boxes |
 | 5 | Web demo: upload a photo, see boxes and counts | Not built yet |
 | 6 | Flutter app with a map | Later |
 
