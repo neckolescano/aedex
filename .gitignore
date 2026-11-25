@@ -1,8 +1,10 @@
 # Big files live in Roboflow / Google Drive, not GitHub
-datasets/
-photos/
-models/
-runs/
+# The leading / means "only the folder at the top of the repo": without it,
+# models/ also hid the app's code folder app/aedex_app/lib/models/.
+/datasets/
+/photos/
+/models/
+/runs/
 *.pt
 *.onnx
 *.tflite
@@ -27,6 +29,7 @@ sagap-plan-prompt.md
 app-ideas-notes.md
 neuro-circuit/
 learning-circuit/
+Dengue Breeding Site Scanner Team Guide.docx
 
 # OS clutter
 Thumbs.db
