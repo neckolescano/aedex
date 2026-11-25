@@ -318,3 +318,63 @@ v2 adds Pail-Basin as class 7, so the output grows from 11 to 12 numbers per can
 2. What would 8-bit quantization (`'w8a32'`) gain and risk, and how would the notebook tell us if it hurt the model?
 3. The model outputs the number 3 for a detection. How does the app know it's a tire, and why is that done with a file instead of code?
 4. What two things must the app do with the 8,400 candidate boxes before it can count containers?
+
+## Part 6: The hotspot map app, Phase 1 (2026-11-26)
+
+**Folder:** `app/aedex_app/` (Flutter). **Branch:** `hotspot-map`. **Task file:** [`docs/tasks/member-3-hotspot-map.md`](docs/tasks/member-3-hotspot-map.md).
+The app opens on a map of the scans. Each scan is one round pin showing how many containers were found, coloured by risk. Tapping a pin opens a card with the count for each class, the date, the location type and the clean-up status.
+
+### Run it
+```
+cd app/aedex_app
+flutter pub get
+flutter run            # phone or emulator
+flutter run -d chrome  # quick check in a browser, no phone needed
+flutter test
+```
+
+### How the code is split, and why
+| File | Job |
+|---|---|
+| `lib/models/scan.dart` | The **scan record** from the task file, as a Dart class. `Scan.fromJson` turns one JSON record into a `Scan`. `riskFor` holds the colour rule: 0 is clear, 1 to 3 is some, 4 or more is high. |
+| `lib/data/scan_repository.dart` | **Where scans come from.** Today it reads `assets/sample_scans.json`. In Phase 2 the model's results come in here instead, and nothing else changes. |
+| `lib/theme.dart` | All colours in one place, including the three risk colours and the readable text colour on each. |
+| `lib/widgets/scan_pin.dart` | One pin: a circle with the total inside. |
+| `lib/widgets/scan_card.dart` | The card for one scan: count bars per class, date, and the 4 clean-up steps. |
+| `lib/screens/map_screen.dart` | Puts it together: loads the scans, draws the map and pins, and remembers which pin is selected. |
+
+Keeping data, rules and drawing apart means each piece can be tested alone, and the map does not care whether scans come from a file or from the model.
+
+### The map
+- **flutter_map with OpenStreetMap tiles:** free, no API key. OSM requires credit on the map, so the bottom corner shows "OpenStreetMap contributors". Their free tile server is for light use; a public release would need a tile provider.
+- **Layers stack like transparent sheets:** tiles at the bottom, then soft circles, then pins, then the credit line.
+- **Street-level scans** (private homes) get a soft 60 m circle around the pin. It says "somewhere around here", so nobody can point at one house. Exact spots (public places) get no circle.
+- **The camera fits all scans** when the map opens (`CameraFit.coordinates`), with extra space at the bottom for the card.
+- **Tapping empty map** closes the card.
+
+### State, in one sentence
+The screen remembers one thing, the selected scan (`_selected`). Tapping a pin sets it, and `setState` makes Flutter redraw the screen: that pin gets a dark ring and its card slides in.
+
+### The glass look
+The legend and the scan card are **frosted glass panels** (`lib/widgets/glass_panel.dart`), and the pins look like glossy drops.
+- **How the panel works:** `BackdropFilter` blurs whatever is behind the panel, then a see-through white gradient, a thin white border and a highlight along the top edge sit on top. `ClipRRect` keeps the blur inside the rounded corners, and the shadow sits outside the clip so it isn't cut off.
+- **Why it's fairly solid (about 50 to 80% white):** a busy map behind clear glass makes text hard to read, especially outdoors in sunlight.
+- **Why only the floating panels:** blur is expensive, and cheap Android phones slow down if many widgets blur at once. Lists and small chips should use plain see-through white instead.
+- **Glossy pins:** a radial gradient puts a lighter spot near the top-left of each pin, like light on a drop of water.
+
+### Data notes
+- `assets/sample_scans.json` is a copy of `app/sample_scans.json`, because Flutter can only bundle files inside the app folder. A test fails if the two copies ever differ.
+- Times are stored with their time zone (`+08:00`) and shown in the phone's own time, so a phone in Manila shows the time the scan was taken.
+
+### What was checked
+- `flutter analyze`: no issues.
+- `flutter test`: 8 tests pass. They cover the risk rule, loading all 10 sample scans, counts and status, the empty scan, class names, the two copies of the data matching, the card's content, and tapping a pin.
+- **In a browser** (web build, phone-sized window): all 10 pins appear with the right colours and counts, street-level circles show, and tapping Scan 006 opened its card (Bottle 6, Drain Inlet 2, Cup 2, Nov 19 3:30 PM, Exact spot, Reported).
+- **Not yet checked:** a real Android phone or emulator.
+
+### Check questions
+1. Why does the colour rule live in `scan.dart` and not inside the pin widget?
+2. In Phase 2 the scans will come from the model instead of a file. Which file changes, and which files stay the same?
+3. Why do street-level scans get a circle, and why 60 m instead of a pin-sized circle?
+4. What does `setState` do when you tap a pin?
+5. What does `BackdropFilter` blur, and why do we keep it to a few panels?
