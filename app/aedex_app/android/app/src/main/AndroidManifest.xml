@@ -1,4 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Needed to download the OpenStreetMap tiles. Debug builds get it
+         automatically; without this line a release build shows a blank map. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="aedex_app"
         android:name="${applicationName}"
