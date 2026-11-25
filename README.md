@@ -16,8 +16,8 @@ New to the project? Read [BUILD-WALKTHROUGH.md](BUILD-WALKTHROUGH.md): it explai
 | 2 | Inspect and merge the datasets | Done: `datasets/merged/v1` (7 classes, 4,979 images); our own photos still being collected |
 | 3 | Train a first model | Done: model v1, test recall 0.735, mAP50 0.799 (scores in [docs/results.md](docs/results.md)) |
 | 4 | Improve: find misses, add photos, retrain | In progress: dataset v2 adds Pail-Basin and more Cup and Plastic-Container boxes |
-| 5 | Web demo: upload a photo, see boxes and counts | Not built yet |
-| 6 | Flutter app with a map | Later |
+| 5 | Model ready for phones (TensorFlow Lite) | Export notebook built: `notebooks/export_tflite.ipynb`; how the app uses it: [docs/model-for-app.md](docs/model-for-app.md) |
+| 6 | Flutter app: camera, model and hotspot map | In progress, built with model v1; model v2 swaps in later |
 
 ## Folder layout
 
@@ -45,6 +45,7 @@ Datasets are not stored on GitHub. Ask the team for the two source zips, or down
 3. Build the merged dataset: `python scripts/merge_datasets.py --zip`
 4. Train: upload `datasets/merged/merged-v1.zip` and run `notebooks/train_baseline_kaggle.ipynb` on Kaggle (or `train_baseline.ipynb` on Google Colab). Each notebook explains itself step by step.
 5. Download the `best.pt` it saves into `models/`, and add the scores to `docs/results.md`.
+6. For the phone app: run `notebooks/export_tflite.ipynb` on Colab (no GPU needed). It saves the `.tflite` model and `labels.txt` to Google Drive.
 
 The scripts need only Python 3; the notebooks install everything else themselves.
 
