@@ -214,3 +214,59 @@ Colab could not give us a free GPU, so there is a second notebook for Kaggle: [`
 | GPU choice | T4 | T4 x2 or P100; we use one GPU (`device=0`) because multi-GPU training often breaks inside notebooks |
 
 Checked: every code cell is valid Python, and the find-and-copy step was tested on a stand-in for Kaggle's input folder made from our merged dataset (it found `data.yaml` and copied 4,321 / 423 / 235 images). Training itself runs only on Kaggle.
+
+## Part 4: Reading the results of model v1 (2026-11-25)
+
+**Files:** [`docs/results.md`](docs/results.md) (all the numbers), `models/aedex-v1-best.pt` (the model, not on GitHub).
+Model v1 trained for 50 epochs on Google Colab's T4 in 1.2 hours. This part explains how to read what the notebook printed, so anyone can judge the next model the same way.
+
+### Where it trained
+Kaggle sat in a queue for 11 hours. Colab gave us a T4 after several tries in the evening, then disconnected once while idle. What worked: reconnect, then **Runtime → Run all** right away, and keep the tab open and the laptop awake. Free GPUs are easiest to get at off-peak hours.
+
+### The scores, in plain words
+- **Recall 0.735:** out of every 100 real containers in the test photos, the model found about 74.
+- **Precision 0.849:** out of every 100 boxes the model drew, about 85 were right.
+- **mAP50 0.799:** one number combining both, across every confidence level. Use it to compare two models; use recall to decide if a model is good enough for us.
+
+Per class, five are strong (Coconut-Exocarp 0.99, Drain-Inlet 0.93, Bottle 0.86, Vase 0.85, Tire 0.84 recall) and two are weak (Cup 0.44, Plastic-Container 0.25).
+
+### Why two classes are weak
+The model saw about 90 training boxes of each, against 1,200 to 2,400 for the others. A model learns what it sees often. This is a **data problem**, not a model problem: more training, or a bigger model, would not fix it. More examples will. Also, with only 11 or 12 of them in the test set, one miss changes the score by 9%, so these two numbers are rough.
+
+Cup's precision is 1.00 with recall 0.44: when it says "cup" it is always right, but it misses most cups. High precision with low recall means the model is **too careful**.
+
+### How to read the charts
+- **Loss lines** (train and val) should go down. Ours did, all the way. If val loss had turned back up while train loss kept falling, that would be **overfitting**.
+- **The sudden drop at epoch 40** is not a bug: for the last 10 epochs YOLO stops "mosaic" (pasting 4 photos into one), so the photos get easier.
+- **Recall levelled off around epoch 25**, while mAP kept creeping up. Extra epochs mostly made the boxes tighter. To find *more* objects, we need more and more varied photos.
+
+### How to read the confusion matrix
+Read it **by column**: each column is what the object really is, and each row is what the model said.
+- The diagonal is correct answers. The **bottom row (background)** is objects the model missed completely.
+- The **right column (background)** is false alarms: the model drew a box where nothing was labeled. Ours mostly says "Vase" on round shapes.
+- Off-diagonal cells are mix-ups: 18% of cups were called Plastic-Container. They look alike.
+
+### Things in the log worth knowing
+- `Remapped 3/7 cls head rows from pretrained weights by class name`: the starting model learned COCO, which already has bottle, vase and cup. YOLO gave those three classes a head start. That is transfer learning at work.
+- Validation and test gave almost the same scores (recall 0.717 and 0.735), so the test split was a fair exam, not an easy one by luck.
+- `best.pt` is 5.5 MB and takes about 7 ms per photo on the GPU: small and fast enough for a phone.
+
+### What the misses tell us
+The "what it missed" pictures showed tires piled behind other tires, moss-covered tires, and small faraway objects. For our use, that is acceptable: if the app finds 3 of 7 tires, the clean-up team still goes there and finds all 7. A spot with **zero** detections is the real danger, and that happened mostly with the two weak classes.
+
+### Decisions
+1. Dataset v2 must add Cup and Plastic-Container boxes, not only Pail-Basin (already in Member 2's labeling table).
+2. Our own Philippine photos go into the test set: these scores come from photos like the training ones, so real-world scores will likely be lower.
+3. The app will use a lower confidence threshold (about 0.15) to favour recall.
+4. The final model will try 75 to 100 epochs.
+
+### What was checked
+- The numbers in `docs/results.md` were copied from the notebook output (Steps 7 and 9).
+- `best.pt` was downloaded from Drive, checked (5,495,514 bytes, same as Colab reported; valid file header), and stored as `models/aedex-v1-best.pt`, which git ignores.
+- **Not yet done:** running the model on our own photos. That needs Ultralytics installed on a laptop or a Colab session.
+
+### Check questions
+1. A class has precision 1.00 and recall 0.40. In one sentence, how does the model behave on that class, and why is that bad for Aedex?
+2. In the confusion matrix, where do you look to find objects the model missed completely? Where for false alarms?
+3. Recall stopped improving at epoch 25, but mAP kept rising until epoch 50. What do the extra epochs improve, and what would improve recall instead?
+4. Why do we trust the test score more because the validation score was almost the same?
