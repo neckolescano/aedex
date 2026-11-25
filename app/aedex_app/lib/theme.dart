@@ -15,10 +15,10 @@ class AedexColors {
   static const high = Color(0xFFC8382B); // 4 or more
 
   static Color forRisk(RiskLevel risk) => switch (risk) {
-        RiskLevel.clear => clear,
-        RiskLevel.some => some,
-        RiskLevel.high => high,
-      };
+    RiskLevel.clear => clear,
+    RiskLevel.some => some,
+    RiskLevel.high => high,
+  };
 
   /// Text colour that stays readable on top of [forRisk].
   static Color onRisk(RiskLevel risk) =>

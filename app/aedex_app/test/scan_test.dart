@@ -19,8 +19,9 @@ void main() {
   });
 
   group('sample_scans.json', () {
-    final scans =
-        parseScans(File('assets/sample_scans.json').readAsStringSync());
+    final scans = parseScans(
+      File('assets/sample_scans.json').readAsStringSync(),
+    );
 
     test('loads all 10 scans', () {
       expect(scans, hasLength(10));
@@ -43,8 +44,14 @@ void main() {
 
     test('only known class names appear', () {
       const classes = {
-        'Bottle', 'Coconut-Exocarp', 'Drain-Inlet', 'Tire', 'Vase', 'Cup',
-        'Plastic-Container', 'Pail-Basin',
+        'Bottle',
+        'Coconut-Exocarp',
+        'Drain-Inlet',
+        'Tire',
+        'Vase',
+        'Cup',
+        'Plastic-Container',
+        'Pail-Basin',
       };
       for (final s in scans) {
         expect(classes.containsAll(s.counts.keys), isTrue, reason: s.id);
@@ -70,11 +77,13 @@ void main() {
       'status': 'reported',
     });
     var closed = false;
-    await tester.pumpWidget(MaterialApp(
-      home: Scaffold(
-        body: ScanCard(scan: scan, onClose: () => closed = true),
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ScanCard(scan: scan, onClose: () => closed = true),
+        ),
       ),
-    ));
+    );
 
     expect(find.text('Scan 001 · 5 containers'), findsOneWidget);
     expect(find.text('Tire'), findsOneWidget);
@@ -98,15 +107,21 @@ void main() {
       'status': 'reported',
     });
     var tapped = false;
-    await tester.pumpWidget(MaterialApp(
-      home: Center(
-        child: SizedBox(
-          width: 44,
-          height: 44,
-          child: ScanPin(scan: scan, selected: false, onTap: () => tapped = true),
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Center(
+          child: SizedBox(
+            width: 44,
+            height: 44,
+            child: ScanPin(
+              scan: scan,
+              selected: false,
+              onTap: () => tapped = true,
+            ),
+          ),
         ),
       ),
-    ));
+    );
 
     expect(find.text('10'), findsOneWidget);
     await tester.tap(find.byType(ScanPin));

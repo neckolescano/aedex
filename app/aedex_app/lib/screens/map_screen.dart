@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import '../data/scan_repository.dart';
 import '../models/scan.dart';
 import '../theme.dart';
+import '../widgets/glass_panel.dart';
 import '../widgets/scan_card.dart';
 import '../widgets/scan_pin.dart';
 
@@ -82,7 +83,8 @@ class _MapScreenState extends State<MapScreen> {
                       point: s.location,
                       radius: 60,
                       useRadiusInMeter: true,
-                      color: AedexColors.forRisk(s.risk).withValues(alpha: 0.15),
+                      color: AedexColors.forRisk(s.risk)
+                          .withValues(alpha: 0.15),
                       borderColor: AedexColors.forRisk(s.risk),
                       borderStrokeWidth: 1.5,
                     ),
@@ -140,50 +142,44 @@ class _Legend extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget dot(Color c, String label) => Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(color: c, shape: BoxShape.circle),
-            ),
-            const SizedBox(width: 6),
-            Text(label, style: const TextStyle(fontSize: 13)),
-          ],
-        );
-
-    return Card(
-      margin: const EdgeInsets.fromLTRB(12, 0, 12, 28),
-      color: Colors.white,
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Containers found',
-              style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 16,
-              runSpacing: 8,
-              children: [
-                dot(AedexColors.clear, 'None'),
-                dot(AedexColors.some, '1 to 3'),
-                dot(AedexColors.high, '4 or more'),
-              ],
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Tap a pin to see what was found there.',
-              style: TextStyle(fontSize: 13, color: AedexColors.muted),
-            ),
-          ],
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(color: c, shape: BoxShape.circle),
         ),
+        const SizedBox(width: 6),
+        Text(label, style: const TextStyle(fontSize: 13)),
+      ],
+    );
+
+    return GlassPanel(
+      margin: const EdgeInsets.fromLTRB(12, 0, 12, 28),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Containers found',
+            style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 16,
+            runSpacing: 8,
+            children: [
+              dot(AedexColors.clear, 'None'),
+              dot(AedexColors.some, '1 to 3'),
+              dot(AedexColors.high, '4 or more'),
+            ],
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            'Tap a pin to see what was found there.',
+            style: TextStyle(fontSize: 13, color: AedexColors.muted),
+          ),
+        ],
       ),
     );
   }

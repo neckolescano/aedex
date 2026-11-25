@@ -355,6 +355,13 @@ Keeping data, rules and drawing apart means each piece can be tested alone, and 
 ### State, in one sentence
 The screen remembers one thing, the selected scan (`_selected`). Tapping a pin sets it, and `setState` makes Flutter redraw the screen: that pin gets a dark ring and its card slides in.
 
+### The glass look
+The legend and the scan card are **frosted glass panels** (`lib/widgets/glass_panel.dart`), and the pins look like glossy drops.
+- **How the panel works:** `BackdropFilter` blurs whatever is behind the panel, then a see-through white gradient, a thin white border and a highlight along the top edge sit on top. `ClipRRect` keeps the blur inside the rounded corners, and the shadow sits outside the clip so it isn't cut off.
+- **Why it's fairly solid (about 50 to 80% white):** a busy map behind clear glass makes text hard to read, especially outdoors in sunlight.
+- **Why only the floating panels:** blur is expensive, and cheap Android phones slow down if many widgets blur at once. Lists and small chips should use plain see-through white instead.
+- **Glossy pins:** a radial gradient puts a lighter spot near the top-left of each pin, like light on a drop of water.
+
 ### Data notes
 - `assets/sample_scans.json` is a copy of `app/sample_scans.json`, because Flutter can only bundle files inside the app folder. A test fails if the two copies ever differ.
 - Times are stored with their time zone (`+08:00`) and shown in the phone's own time, so a phone in Manila shows the time the scan was taken.
@@ -370,3 +377,4 @@ The screen remembers one thing, the selected scan (`_selected`). Tapping a pin s
 2. In Phase 2 the scans will come from the model instead of a file. Which file changes, and which files stay the same?
 3. Why do street-level scans get a circle, and why 60 m instead of a pin-sized circle?
 4. What does `setState` do when you tap a pin?
+5. What does `BackdropFilter` blur, and why do we keep it to a few panels?

@@ -28,11 +28,21 @@ class ScanPin extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: AedexColors.forRisk(risk),
+            // A light spot near the top-left makes the pin look like a
+            // glossy drop of glass.
+            gradient: RadialGradient(
+              center: const Alignment(-0.35, -0.45),
+              radius: 0.9,
+              colors: [
+                Color.lerp(AedexColors.forRisk(risk), Colors.white, 0.45)!,
+                AedexColors.forRisk(risk),
+              ],
+              stops: const [0, 0.6],
+            ),
             shape: BoxShape.circle,
             border: Border.all(
-              color: selected ? AedexColors.brand : Colors.white,
-              width: selected ? 4 : 3,
+              color: selected ? AedexColors.brand : const Color(0xE6FFFFFF),
+              width: selected ? 4 : 2.5,
             ),
             boxShadow: const [
               BoxShadow(
@@ -58,5 +68,4 @@ class ScanPin extends StatelessWidget {
 }
 
 /// "scan-006" -> "Scan 006"
-String scanLabel(Scan scan) =>
-    'Scan ${scan.id.replaceFirst('scan-', '')}';
+String scanLabel(Scan scan) => 'Scan ${scan.id.replaceFirst('scan-', '')}';
