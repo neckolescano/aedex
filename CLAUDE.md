@@ -36,6 +36,7 @@ Members 2 and 3: fill in your row in your first pull request.
 - **Build datasets with the scripts,** never by hand: `scripts/inspect_dataset.py` to check, `scripts/merge_datasets.py` to merge (it remaps classes, drops classes, prevents leakage).
 - **Recall matters most:** a missed breeding site is worse than a false alarm.
 - **Privacy:** public data must not show faces, house numbers or plate numbers, and maps show rough locations for private homes.
+- **The app uses the model on the phone** (decided 2026-11-26, no web demo). Model v1 is `aedex-v1.tflite` + `labels.txt`, shared through the Google Drive folder `app-model` (never committed: `*.tflite` is ignored). Its contract is `docs/model-for-app.md`: input `[1, 3, 640, 640]` channels first, confidence 0.15, class names read from `labels.txt` so model v2 is a file swap.
 
 ## Commands
 ```
@@ -43,3 +44,4 @@ python scripts/inspect_dataset.py <dataset.zip or folder> [--drop Larva]
 python scripts/merge_datasets.py [--zip] [--overwrite]
 ```
 Training: `notebooks/train_baseline_kaggle.ipynb` on Kaggle (or `train_baseline.ipynb` on Colab).
+Phone model: `notebooks/export_tflite.ipynb` on Colab (CPU is enough).
