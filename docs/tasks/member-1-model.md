@@ -15,20 +15,27 @@
 - [x] Download `best.pt` into `models/aedex-v1-best.pt`.
 - [x] Branch `model-v1-results`: results and misses recorded in `docs/results.md`.
 
-### 2. Review the team's work
+### 2. Hand model v1 to the app (now)
+The team decided to build the app with model v1 now and swap in v2 later (2026-11-26).
+1. On Colab, run `notebooks/export_tflite.ipynb` (CPU is enough). Step 7 must say **PASS**.
+2. Share the Drive folder `Dengue Breeding Site Scanner/app-model/` with Member 3.
+3. Tell Member 3 it's ready and point them to `docs/model-for-app.md`.
+
+### 3. Review the team's work
 - Member 2's pull request `basin-dataset-v2`: check the inspection report of dataset v2 (Pail-Basin box count, no leakage, present in every split).
 - Member 3's pull request `hotspot-map`: run the app and check the pins.
 
-### 3. Build the final model (after dataset v2 is merged)
+### 4. Build the final model (after dataset v2 is merged)
 1. In the Kaggle notebook's Settings, set `MODEL` to model v1's `best.pt` (uploaded as a Kaggle dataset) instead of `yolo11n.pt`, and use `merged-v2.zip`.
 2. Train on **all of dataset v2**, not only the basin photos, or the model forgets the other classes.
 3. Also train once from plain `yolo11n.pt` on dataset v2, and keep whichever has the better **recall on the same test set**.
 4. Record both in `docs/results.md`.
 
-### 4. Hand the model to the app
-Export the chosen model for phones (TensorFlow Lite) and work with Member 3 to connect it (Phase 3 of the hotspot map task).
+### 5. Swap the final model into the app
+Run the export notebook again with `MODEL_PT` set to the final model and `VERSION = 'v2'`, share the new files, and check the app with Member 3 (see "Swapping in a new model" in `docs/model-for-app.md`).
 
 ## Done when
 - [x] Model v1 scores in `docs/results.md`
 - [ ] Final model trained on dataset v2 and compared against the alternative
+- [ ] Model v1 exported for the app (export check says PASS) and shared with Member 3
 - [ ] Final model exported for the app

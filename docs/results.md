@@ -38,6 +38,18 @@ The validation split gave almost the same overall numbers (precision 0.869, reca
 - **False alarms:** the most common one is "Vase" on things that are not labeled objects (round shapes, planters).
 - **From the "what it missed" pictures:** tires piled behind other tires, moss-covered tires, and small objects far from the camera (distant tires, a far drain inlet).
 
+### Phone version (TensorFlow Lite), 2026-11-26
+Exported with `notebooks/export_tflite.ipynb` (LiteRT format, full 32-bit, 10.7 MB, input `[1, 3, 640, 640]`), scored on the same test split:
+
+| | `.pt` (CPU) | `.tflite` | diff |
+|---|---|---|---|
+| Precision | 0.846 | 0.906 | +0.060 |
+| Recall | 0.739 | 0.713 | −0.026 |
+| mAP@50 | 0.800 | 0.815 | +0.015 |
+| mAP@50-95 | 0.583 | 0.588 | +0.005 |
+
+mAP is the same or slightly better, so the conversion kept the model's quality. Precision and recall moved in opposite directions because they are read at one point on the curve, which shifts with tiny numeric changes. (The `.pt` scores differ slightly from the GPU test above because this run used a CPU.)
+
 ### What to do about it
 1. **More Cup and Plastic-Container boxes:** Member 2's relabeling of grace's photos (dataset v2) includes both classes, not only Pail-Basin.
 2. **Our own photos from Philippine yards in the test set.** These test photos come from the same sources as the training data, so real-world scores will likely be lower.

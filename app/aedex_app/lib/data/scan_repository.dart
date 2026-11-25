@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import '../models/scan.dart';
 
 /// Where the map gets its scans. Today: the sample file bundled with the app.
-/// Later (Phase 3) the real model's results come in here, and the map
+/// Later (Phase 2) the real model's results come in here, and the map
 /// does not need to change.
 class ScanRepository {
   ScanRepository({AssetBundle? bundle}) : _bundle = bundle ?? rootBundle;
