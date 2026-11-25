@@ -284,7 +284,7 @@ The "what it missed" pictures showed tires piled behind other tires, moss-covere
 | Choice | Why |
 |---|---|
 | **CPU runtime, no GPU** | Converting and checking are light work. No waiting for a free GPU |
-| **float16** (`half=True`) | Each number takes 16 bits instead of 32: half the file size, faster on phones, practically the same answers |
+| **Full 32-bit precision** (`quantize=None`) | Nothing is lost in the conversion. The file is about 10 MB, fine for a phone. An 8-bit version (`'w8a32'`) would be about 4 times smaller but can lose a little accuracy; we try it only if the app turns out slow |
 | **Score both files on the test set** (Step 7) | A conversion can break a model silently, for example by mixing up colour order. If the `.tflite` scores like the `.pt` (within 0.02), the conversion is safe. We check instead of trusting |
 | **Only the `test/` folder is unzipped** | The check needs 235 photos, not 4,979, so it skips most of the 1 GB zip |
 | **Look at 3 photos** (Step 8) | Numbers can hide nonsense; our eyes catch it |
@@ -292,6 +292,9 @@ The "what it missed" pictures showed tires piled behind other tires, moss-covere
 | **Confidence 0.15 for the app** | Lower than YOLO's usual 0.25: more containers found, a few more false alarms. Recall matters most |
 | **Version in the file names** (`aedex-v1.tflite`) | v1 and v2 files can never be confused |
 | **Files go to Drive, not GitHub** | Model files are big binary files that change with every version; `.gitignore` keeps `*.tflite` out |
+
+### A bug we hit: the tool changed under us
+The first run failed at Step 5. Colab installs the newest Ultralytics each time, and version 8.4.218 had renamed the format `tflite` to `litert` (Google renamed TensorFlow Lite to LiteRT) and replaced `half=True` (16-bit) with `quantize`, which offers no 16-bit option. The error message itself listed the allowed values, so the fix was to read it and pick `quantize=None` (32-bit). Lesson: read the whole error, the answer is often in it. And when exact results matter, pin the version (`pip install ultralytics==8.4.218`).
 
 ### What comes out of the model
 For one photo, the model gives **8,400 candidate boxes**, each with 4 box numbers and a score for every class (4 + 7 = 11 numbers). Almost all candidates have low scores. The app keeps those above 0.15 and removes duplicates that overlap too much (**non-maximum suppression**, NMS). What's left are the boxes you see, and counting them per class name gives the scan's `counts`.
@@ -306,6 +309,6 @@ v2 adds Pail-Basin as class 7, so the output grows from 11 to 12 numbers per can
 
 ### Check questions
 1. Why can't the phone app use `best.pt` directly?
-2. What does `half=True` change, and how does the notebook make sure it didn't hurt the model?
+2. What would 8-bit quantization (`'w8a32'`) gain and risk, and how would the notebook tell us if it hurt the model?
 3. The model outputs the number 3 for a detection. How does the app know it's a tire, and why is that done with a file instead of code?
 4. What two things must the app do with the 8,400 candidate boxes before it can count containers?

@@ -7,7 +7,7 @@ Google Drive folder **`Dengue Breeding Site Scanner/app-model/`** (Member 1 shar
 
 | File | What it is |
 |---|---|
-| `aedex-v1.tflite` | The model, TensorFlow Lite, float16 |
+| `aedex-v1.tflite` | The model, TensorFlow Lite (LiteRT), full 32-bit precision, about 10 MB |
 | `labels.txt` | Class names, one per line, in number order |
 | `aedex-v1-info.json` | Image size, thresholds, input/output shapes, test scores |
 
