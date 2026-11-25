@@ -1,0 +1,15 @@
+{
+  "_note": "Made-up sample scans for building the hotspot map before the model is ready. Not real data. Field meanings: docs/tasks/member-3-hotspot-map.md",
+  "scans": [
+    { "id": "scan-001", "time": "2026-11-18T07:40:00+08:00", "lat": 14.6011, "lng": 120.9855, "location_precision": "street", "counts": { "Tire": 2, "Cup": 3 }, "status": "reported" },
+    { "id": "scan-002", "time": "2026-11-18T08:05:00+08:00", "lat": 14.6018, "lng": 120.9861, "location_precision": "street", "counts": { "Vase": 4, "Bottle": 2, "Plastic-Container": 1 }, "status": "reported" },
+    { "id": "scan-003", "time": "2026-11-18T09:20:00+08:00", "lat": 14.6004, "lng": 120.9849, "location_precision": "exact", "counts": { "Tire": 5, "Drain-Inlet": 1 }, "status": "assigned" },
+    { "id": "scan-004", "time": "2026-11-19T06:55:00+08:00", "lat": 14.5989, "lng": 120.9830, "location_precision": "street", "counts": { "Coconut-Exocarp": 2 }, "status": "cleaned" },
+    { "id": "scan-005", "time": "2026-11-19T10:10:00+08:00", "lat": 14.5976, "lng": 120.9871, "location_precision": "street", "counts": {}, "status": "verified" },
+    { "id": "scan-006", "time": "2026-11-19T15:30:00+08:00", "lat": 14.6026, "lng": 120.9840, "location_precision": "exact", "counts": { "Drain-Inlet": 2, "Bottle": 6, "Cup": 2 }, "status": "reported" },
+    { "id": "scan-007", "time": "2026-11-20T08:15:00+08:00", "lat": 14.5995, "lng": 120.9842, "location_precision": "street", "counts": { "Tire": 1 }, "status": "reported" },
+    { "id": "scan-008", "time": "2026-11-20T11:45:00+08:00", "lat": 14.5968, "lng": 120.9818, "location_precision": "street", "counts": { "Vase": 1, "Cup": 1 }, "status": "assigned" },
+    { "id": "scan-009", "time": "2026-11-21T07:05:00+08:00", "lat": 14.6033, "lng": 120.9877, "location_precision": "exact", "counts": { "Tire": 3, "Plastic-Container": 4, "Bottle": 3 }, "status": "reported" },
+    { "id": "scan-010", "time": "2026-11-21T16:20:00+08:00", "lat": 14.5982, "lng": 120.9859, "location_precision": "street", "counts": { "Coconut-Exocarp": 1, "Cup": 1 }, "status": "cleaned" }
+  ]
+}
