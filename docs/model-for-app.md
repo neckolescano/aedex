@@ -18,13 +18,21 @@ They are made by [`notebooks/export_tflite.ipynb`](../notebooks/export_tflite.ip
 | | Value |
 |---|---|
 | Classes (v1) | `0 Bottle, 1 Coconut-Exocarp, 2 Drain-Inlet, 3 Tire, 4 Vase, 5 Cup, 6 Plastic-Container` |
-| Input | 1 photo, 640 × 640, RGB, values 0 to 1 (`[1, 640, 640, 3]`, float32) |
-| Output | `[1, 11, 8400]`: for 8,400 candidate boxes, 4 box numbers (centre x, centre y, width, height) + 7 class scores |
+| Input | 1 photo, 640 × 640, RGB, values 0 to 1, **channels first**: `[1, 3, 640, 640]`, float32 (see the warning below) |
+| Output | `[1, 11, 8400]`, float32: for 8,400 candidate boxes, 4 box numbers (centre x, centre y, width, height) + 7 class scores |
+| File size | 10.7 MB (full 32-bit precision) |
 | Confidence threshold | **0.15** (lower than the usual 0.25, because a missed breeding site is worse than a false alarm) |
 | IoU threshold (duplicate removal) | 0.45 |
-| Test scores | recall 0.735, precision 0.849, mAP50 0.799 (exact values for the .tflite are in the info file) |
+| Test scores of the `.tflite` | mAP50 0.815, precision 0.906, recall 0.713 (the original `.pt`: 0.800, 0.846, 0.739; same quality, see `docs/results.md`) |
 
 The output is raw: the app (or its YOLO plugin) must keep boxes above the confidence threshold and remove overlapping duplicates (non-maximum suppression). Suggested: the Ultralytics Flutter plugin (`ultralytics_yolo` on pub.dev), which does this for YOLO `.tflite` models. Check its README for the current setup steps.
+
+### Warning: channels first
+Most phone code stores a photo **channels last**: each pixel's red, green and blue sit together (`[1, 640, 640, 3]`). This model was exported with the newer LiteRT tool, which keeps PyTorch's **channels first** layout: all red values, then all green, then all blue (`[1, 3, 640, 640]`). Fed the wrong layout, the model runs without any error but finds nothing sensible.
+
+**Test this first, before building more:** load `aedex-v1.tflite` in the app, run it on a clear photo of a tire or bottle, and check that the boxes look right.
+- If you write the input code yourself, arrange the pixels channels first.
+- If the plugin refuses the model or finds nothing, tell Member 1: the model can be re-exported channels last with an older Ultralytics version (the `tflite` format, before 8.4.83).
 
 ## From boxes to a scan record
 Count the boxes per class name and put them in `counts`, as in the scan data contract (`docs/tasks/member-3-hotspot-map.md`):
