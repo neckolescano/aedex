@@ -2,6 +2,9 @@
     <!-- Needed to download the OpenStreetMap tiles. Debug builds get it
          automatically; without this line a release build shows a blank map. -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Where a scan was taken. Asked the first time the user saves a scan. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
         android:label="aedex_app"
         android:name="${applicationName}"

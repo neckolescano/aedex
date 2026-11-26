@@ -67,5 +67,9 @@ class ScanPin extends StatelessWidget {
   }
 }
 
-/// "scan-006" -> "Scan 006"
-String scanLabel(Scan scan) => 'Scan ${scan.id.replaceFirst('scan-', '')}';
+/// "scan-006" -> "Scan 006". Real ids are long timestamps
+/// ("scan-1795626973902"), so only the last 4 digits are shown: "Scan 3902".
+String scanLabel(Scan scan) {
+  final tail = scan.id.replaceFirst('scan-', '');
+  return 'Scan ${tail.length > 4 ? tail.substring(tail.length - 4) : tail}';
+}

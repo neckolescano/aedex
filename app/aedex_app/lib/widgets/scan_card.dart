@@ -36,10 +36,20 @@ String _capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 /// The card that slides up when a pin is tapped:
 /// counts per class, date, location type and clean-up status.
 class ScanCard extends StatelessWidget {
-  const ScanCard({super.key, required this.scan, required this.onClose});
+  const ScanCard({
+    super.key,
+    required this.scan,
+    required this.onClose,
+    this.onAdvance,
+    this.bottomMargin = 16,
+  });
 
   final Scan scan;
   final VoidCallback onClose;
+
+  /// Moves the scan to its next clean-up step. Null hides the button.
+  final VoidCallback? onAdvance;
+  final double bottomMargin;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +63,7 @@ class ScanCard extends StatelessWidget {
         : 'Exact spot (public place)';
 
     return GlassPanel(
-      margin: const EdgeInsets.fromLTRB(12, 0, 12, 16),
+      margin: EdgeInsets.fromLTRB(12, 0, 12, bottomMargin),
       borderRadius: 30,
       padding: const EdgeInsets.fromLTRB(20, 16, 12, 20),
       child: Column(
@@ -168,11 +178,31 @@ class ScanCard extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8),
             child: _StatusSteps(status: scan.status),
           ),
+          if (onAdvance != null && nextStatus(scan.status) != null) ...[
+            const SizedBox(height: 14),
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: FilledButton(
+                  onPressed: onAdvance,
+                  child: Text(_nextAction[scan.status]!),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 }
+
+const _nextAction = {
+  ScanStatus.reported: 'Assign a clean-up team',
+  ScanStatus.assigned: 'Mark as cleaned',
+  ScanStatus.cleaned: 'Verify the clean-up',
+};
 
 /// Four bars: reported -> assigned -> cleaned -> verified.
 class _StatusSteps extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aedex_app/data/scan_repository.dart';
+import 'package:aedex_app/data/scan_store.dart';
 import 'package:aedex_app/models/scan.dart';
 import 'package:aedex_app/widgets/scan_card.dart';
 import 'package:aedex_app/widgets/scan_pin.dart';
@@ -19,9 +19,7 @@ void main() {
   });
 
   group('sample_scans.json', () {
-    final scans = parseScans(
-      File('assets/sample_scans.json').readAsStringSync(),
-    );
+    final scans = parseScans(File('../sample_scans.json').readAsStringSync());
 
     test('loads all 10 scans', () {
       expect(scans, hasLength(10));
@@ -58,11 +56,12 @@ void main() {
       }
     });
 
-    test('the sample file in app/ and the app asset are the same', () {
-      expect(
-        File('assets/sample_scans.json').readAsStringSync(),
-        File('../sample_scans.json').readAsStringSync(),
-      );
+    test('a scan survives saving and loading (toJson / fromJson)', () {
+      final again = parseScans(encodeScans(scans));
+      expect(again, hasLength(scans.length));
+      for (var i = 0; i < scans.length; i++) {
+        expect(again[i].toJson(), scans[i].toJson());
+      }
     });
   });
 

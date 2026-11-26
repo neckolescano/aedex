@@ -1,143 +1,229 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 
-import '../data/scan_repository.dart';
+import '../filters/scan_filter.dart';
 import '../models/scan.dart';
 import '../theme.dart';
+import '../widgets/base_map.dart';
 import '../widgets/glass_panel.dart';
 import '../widgets/scan_card.dart';
 import '../widgets/scan_pin.dart';
 
-/// Phase 1: one pin per scan, coloured by risk; tap a pin for its card.
+/// One pin per saved scan, coloured by risk; tap a pin for its card.
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key, this.repository});
+  const MapScreen({
+    super.key,
+    required this.scans,
+    required this.filter,
+    required this.totalScans,
+    required this.onOpenFilters,
+    required this.onAdvance,
+    required this.focus,
+  });
 
-  /// Leave empty to use the bundled sample scans.
-  final ScanRepository? repository;
+  /// Scans that pass [filter], newest first.
+  final List<Scan> scans;
+  final ScanFilter filter;
+
+  /// All saved scans, before the filter (for the empty states).
+  final int totalScans;
+  final VoidCallback onOpenFilters;
+  final ValueChanged<String> onAdvance;
+
+  /// Set to a scan id to open its card and move the map there
+  /// (used right after a new scan is saved).
+  final ValueNotifier<String?> focus;
 
   @override
   State<MapScreen> createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
-  late final Future<List<Scan>> _scans;
-  Scan? _selected;
+  final _controller = MapController();
+  String? _selectedId;
+  bool _mapReady = false;
 
   @override
   void initState() {
     super.initState();
-    _scans = (widget.repository ?? ScanRepository()).loadScans();
+    widget.focus.addListener(_onFocus);
+  }
+
+  @override
+  void dispose() {
+    widget.focus.removeListener(_onFocus);
+    super.dispose();
+  }
+
+  void _onFocus() {
+    final id = widget.focus.value;
+    if (id == null) return;
+    setState(() => _selectedId = id);
+    for (final s in widget.scans) {
+      if (s.id == id && _mapReady) _controller.move(s.location, 17);
+    }
+    widget.focus.value = null;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<List<Scan>>(
-        future: _scans,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Could not load scans: ${snapshot.error}'),
-            );
-          }
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          return _buildMap(snapshot.data!);
-        },
-      ),
-    );
-  }
+    final scans = widget.scans;
+    Scan? selected;
+    for (final s in scans) {
+      if (s.id == _selectedId) selected = s;
+    }
 
-  Widget _buildMap(List<Scan> scans) {
     return Stack(
       children: [
-        FlutterMap(
-          options: MapOptions(
-            initialCenter: _centerOf(scans),
-            initialZoom: 16,
-            // Zoom so every scan fits, leaving room for the card at the bottom.
-            initialCameraFit: scans.length < 2
-                ? null
-                : CameraFit.coordinates(
-                    coordinates: [for (final s in scans) s.location],
-                    padding: const EdgeInsets.fromLTRB(48, 64, 48, 200),
-                    maxZoom: 17,
-                  ),
-            // Tapping empty map closes the card.
-            onTap: (_, _) => setState(() => _selected = null),
-          ),
-          children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'ph.aedex.aedex_app',
-            ),
-            // Street-level scans get a soft circle: "somewhere around here",
-            // so nobody can point at one house.
-            CircleLayer(
-              circles: [
-                for (final s in scans)
-                  if (s.precision == LocationPrecision.street)
-                    CircleMarker(
+        Positioned.fill(
+          child: BaseMap(
+            controller: _controller,
+            points: [for (final s in scans) s.location],
+            onTap: () => setState(() => _selectedId = null),
+            onMapReady: () => _mapReady = true,
+            layers: [
+              // Street-level scans get a soft circle: "somewhere around
+              // here", so nobody can point at one house.
+              CircleLayer(
+                circles: [
+                  for (final s in scans)
+                    if (s.precision == LocationPrecision.street)
+                      CircleMarker(
+                        point: s.location,
+                        radius: 60,
+                        useRadiusInMeter: true,
+                        color: AedexColors.forRisk(s.risk)
+                            .withValues(alpha: 0.15),
+                        borderColor: AedexColors.forRisk(s.risk),
+                        borderStrokeWidth: 1.5,
+                      ),
+                ],
+              ),
+              MarkerLayer(
+                markers: [
+                  for (final s in scans)
+                    Marker(
                       point: s.location,
-                      radius: 60,
-                      useRadiusInMeter: true,
-                      color: AedexColors.forRisk(s.risk)
-                          .withValues(alpha: 0.15),
-                      borderColor: AedexColors.forRisk(s.risk),
-                      borderStrokeWidth: 1.5,
+                      width: s.risk == RiskLevel.high ? 44 : 40,
+                      height: s.risk == RiskLevel.high ? 44 : 40,
+                      child: ScanPin(
+                        scan: s,
+                        selected: s.id == _selectedId,
+                        onTap: () => setState(() => _selectedId = s.id),
+                      ),
                     ),
-              ],
+                ],
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          left: 16,
+          right: 16,
+          top: 0,
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: _TopBar(
+                shown: scans.length,
+                total: widget.totalScans,
+                activeFilters: widget.filter.activeCount,
+                onOpenFilters: widget.onOpenFilters,
+              ),
             ),
-            MarkerLayer(
-              markers: [
-                for (final s in scans)
-                  Marker(
-                    point: s.location,
-                    width: s.risk == RiskLevel.high ? 44 : 40,
-                    height: s.risk == RiskLevel.high ? 44 : 40,
-                    child: ScanPin(
-                      scan: s,
-                      selected: identical(s, _selected),
-                      onTap: () => setState(() => _selected = s),
-                    ),
-                  ),
-              ],
-            ),
-            const SimpleAttributionWidget(
-              source: Text('OpenStreetMap contributors'),
-            ),
-          ],
+          ),
         ),
         Align(
           alignment: Alignment.bottomCenter,
           child: SafeArea(
             top: false,
-            child: _selected == null
-                ? const _Legend()
-                : ScanCard(
-                    scan: _selected!,
-                    onClose: () => setState(() => _selected = null),
-                  ),
+            child: Padding(
+              // Room for the floating tab bar.
+              padding: const EdgeInsets.only(bottom: 84),
+              child: selected != null
+                  ? ScanCard(
+                      scan: selected,
+                      onClose: () => setState(() => _selectedId = null),
+                      onAdvance: () => widget.onAdvance(selected!.id),
+                    )
+                  : _BottomHint(
+                      totalScans: widget.totalScans,
+                      shown: scans.length,
+                    ),
+            ),
           ),
         ),
       ],
     );
   }
+}
 
-  /// Middle of all scans, so the map opens where the data is.
-  LatLng _centerOf(List<Scan> scans) {
-    if (scans.isEmpty) return const LatLng(14.5995, 120.9842);
-    final lat = scans.map((s) => s.location.latitude).reduce((a, b) => a + b);
-    final lng = scans.map((s) => s.location.longitude).reduce((a, b) => a + b);
-    return LatLng(lat / scans.length, lng / scans.length);
+class _TopBar extends StatelessWidget {
+  const _TopBar({
+    required this.shown,
+    required this.total,
+    required this.activeFilters,
+    required this.onOpenFilters,
+  });
+
+  final int shown;
+  final int total;
+  final int activeFilters;
+  final VoidCallback onOpenFilters;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: GlassPanel(
+            borderRadius: 26,
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+            child: Text(
+              total == 0
+                  ? 'No scans yet'
+                  : shown == total
+                  ? '$total ${total == 1 ? 'scan' : 'scans'} on the map'
+                  : '$shown of $total scans shown',
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                color: AedexColors.ink,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Badge(
+          isLabelVisible: activeFilters > 0,
+          label: Text('$activeFilters'),
+          child: Tooltip(
+            message: 'Filters',
+            child: SizedBox(
+              width: 52,
+              height: 52,
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  shape: const CircleBorder(),
+                ),
+                onPressed: onOpenFilters,
+                child: const Icon(Icons.tune),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
-/// Shown when no pin is selected: what the colours mean.
-class _Legend extends StatelessWidget {
-  const _Legend();
+/// Shown when no pin is selected: what the colours mean, or what to do next.
+class _BottomHint extends StatelessWidget {
+  const _BottomHint({required this.totalScans, required this.shown});
+
+  final int totalScans;
+  final int shown;
 
   @override
   Widget build(BuildContext context) {
@@ -154,8 +240,14 @@ class _Legend extends StatelessWidget {
       ],
     );
 
+    final message = totalScans == 0
+        ? 'Open the Scan tab and take a photo of a spot. Its result appears here as a pin.'
+        : shown == 0
+        ? 'No scans match the filters. Open Filters to show more.'
+        : 'Tap a pin to see what was found there.';
+
     return GlassPanel(
-      margin: const EdgeInsets.fromLTRB(12, 0, 12, 28),
+      margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,9 +267,9 @@ class _Legend extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          const Text(
-            'Tap a pin to see what was found there.',
-            style: TextStyle(fontSize: 13, color: AedexColors.muted),
+          Text(
+            message,
+            style: const TextStyle(fontSize: 13, color: AedexColors.muted),
           ),
         ],
       ),

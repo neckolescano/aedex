@@ -78,7 +78,12 @@ class GlassPanel extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Padding(padding: padding, child: child),
+                  // A see-through Material so list tiles and buttons inside
+                  // can draw their tap ripple on the glass.
+                  Material(
+                    type: MaterialType.transparency,
+                    child: Padding(padding: padding, child: child),
+                  ),
                 ],
               ),
             ),
