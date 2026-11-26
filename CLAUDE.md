@@ -18,7 +18,7 @@ Instructions for AI assistants (Claude Code reads this file automatically). Huma
 |---|---|---|---|---|
 | 1 | Nicho | neckolescano | Model lead | `docs/tasks/member-1-model.md` |
 | 2 | (add your name) | (add your username) | Data lead: Pail-Basin | `docs/tasks/member-2-pail-basin-data.md` |
-| 3 | (add your name) | (add your username) | App lead: hotspot map | `docs/tasks/member-3-hotspot-map.md` |
+| 3 | Christian Lascuña | clascuna556171 | App lead: hotspot map | `docs/tasks/member-3-hotspot-map.md` |
 
 Members 2 and 3: fill in your row in your first pull request.
 
