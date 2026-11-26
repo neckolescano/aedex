@@ -84,9 +84,9 @@ class _AppShellState extends State<AppShell> {
                 onShowOnMap: _showOnMap,
               ),
               MapScreen(
-                scans: _filter.apply(all),
+                allScans: all,
                 filter: _filter,
-                totalScans: all.length,
+                onFilterChanged: (f) => setState(() => _filter = f),
                 onOpenFilters: _openFilters,
                 onAdvance: store.advanceStatus,
                 focus: _focus,

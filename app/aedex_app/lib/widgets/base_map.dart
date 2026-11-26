@@ -16,7 +16,15 @@ class BaseMap extends StatelessWidget {
     this.onTap,
     this.onMapReady,
     this.bottomPadding = 220,
+    this.topPadding = 140,
+    this.dark = false,
   });
+
+  /// Room kept free at the top for the bars; the OSM credit sits below it.
+  final double topPadding;
+
+  /// Dark map tiles (Hotspots), made by darkening the normal OSM tiles.
+  final bool dark;
 
   /// Called once the map can be moved with [controller].
   final VoidCallback? onMapReady;
@@ -41,7 +49,7 @@ class BaseMap extends StatelessWidget {
             ? null
             : CameraFit.coordinates(
                 coordinates: points,
-                padding: EdgeInsets.fromLTRB(48, 140, 48, bottomPadding),
+                padding: EdgeInsets.fromLTRB(48, topPadding, 48, bottomPadding),
                 maxZoom: 17,
               ),
         onTap: onTap == null ? null : (_, _) => onTap!(),
@@ -51,15 +59,16 @@ class BaseMap extends StatelessWidget {
         TileLayer(
           urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
           userAgentPackageName: 'ph.aedex.aedex_app',
+          tileBuilder: dark ? darkModeTileBuilder : null,
         ),
         ...layers,
-        // OSM requires visible credit: kept just below the top bar.
-        const SafeArea(
+        // OSM requires visible credit: kept just below the top bars.
+        SafeArea(
           child: Padding(
-            padding: EdgeInsets.only(top: 76),
-            child: SimpleAttributionWidget(
+            padding: EdgeInsets.only(top: topPadding - 64),
+            child: const SimpleAttributionWidget(
               source: Text('OpenStreetMap contributors'),
-              alignment: Alignment.topRight,
+              alignment: Alignment.topLeft,
             ),
           ),
         ),

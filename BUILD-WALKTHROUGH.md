@@ -434,3 +434,32 @@ Scans are stored on the phone that made them, so two phones don't see each other
 2. The model returns 8,400 boxes. Name the two steps that turn them into a handful of real containers.
 3. What changes, and what stays the same, when model v2 with Pail-Basin arrives?
 4. Why are private homes rounded to about 100 m, and why is the photo not saved?
+
+## Part 8: Making the app match the design (2026-11-27)
+The private design mock-up had five screens in a "liquid glass" style. This part brings the Flutter screens close to it. No data or logic changed; only how things look.
+
+### Shared glass pieces (`widgets/glass_controls.dart`)
+- **TintButton**: the main action, a deep-green glass pill ("Save to map", "Show 7 scans").
+- **GlassChip** and **GlassIconButton**: frosted white when off, green when on.
+- **CountBadge**: the glossy coloured square with a container count.
+- `tintDecoration` and `frostDecoration` are plain `BoxDecoration`s without blur. Real blur (`BackdropFilter`) is slow when there are many small items, so only the big panels blur.
+
+### The font
+Plus Jakarta Sans through the `google_fonts` package. It downloads once and is cached. Version 9 of that package is built on Flutter's new `material_ui` package, which has its own `TextTheme` type, so `theme.dart` styles each text style one by one instead of using the package's `...TextTheme()` shortcut.
+
+### Screen by screen
+- **Home**: progress ring, a "Clean first" card with the top zone, latest scans.
+- **Map**: count pill, status chips with counts (tap one to show only that status), a locate button, and a summary card when no pin is selected.
+- **Hotspots**: dark map tiles, glowing heat rings, smoky zone badges and zone cards. The coloured bar in each card shows how far the clean-up has got (red reported, yellow assigned, green cleaned, blue verified).
+- **Filters**: status as four tiles, a strip of the last days that have scans (tap a day to show only that day), and risk pills.
+- **Scan**: the photo fills the screen with glowing boxes and small glass labels. The result sheet floats on top. The "Street level / Exact spot" chip at the top switches between private home and public place.
+
+### What was checked
+- `flutter analyze`: no issues. `flutter test`: 40 tests pass. The Filters test now uses a phone-sized test screen so every tile is on screen.
+- Web build checked in the browser at phone size: Home, Map, Hotspots and Filters, with the test data loaded only into the browser for that check (and removed after). Filtering to one day without "Verified" showed the right count.
+- **Not checked:** the Scan result screen with a real photo. Scanning needs the phone app (the browser can't run the model), and there is no Android phone or emulator on this laptop. The widget test covers it with a stand-in model.
+
+### Check questions
+1. Why do the small chips use a plain decoration instead of real blur?
+2. In the Hotspots card, what does a bar that is mostly green and blue tell a barangay worker?
+3. Why did the font need a small workaround with `google_fonts` version 9?

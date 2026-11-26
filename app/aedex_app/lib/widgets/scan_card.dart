@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/scan.dart';
 import '../theme.dart';
+import 'glass_controls.dart';
 import 'glass_panel.dart';
 import 'scan_pin.dart';
 
@@ -73,22 +74,11 @@ class ScanCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: AedexColors.forRisk(risk),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  '$total',
-                  style: TextStyle(
-                    color: AedexColors.onRisk(risk),
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
+              CountBadge(
+                count: total,
+                color: AedexColors.forRisk(risk),
+                textColor: AedexColors.onRisk(risk),
+                size: 46,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -144,12 +134,7 @@ class ScanCard extends StatelessWidget {
                     Expanded(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: e.value / maxCount,
-                          minHeight: 8,
-                          color: AedexColors.brand,
-                          backgroundColor: const Color(0x1F14402F),
-                        ),
+                        child: _GradientBar(fraction: e.value / maxCount),
                       ),
                     ),
                     SizedBox(
@@ -182,13 +167,9 @@ class ScanCard extends StatelessWidget {
             const SizedBox(height: 14),
             Padding(
               padding: const EdgeInsets.only(right: 8),
-              child: SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: FilledButton(
-                  onPressed: onAdvance,
-                  child: Text(_nextAction[scan.status]!),
-                ),
+              child: TintButton(
+                label: _nextAction[scan.status]!,
+                onPressed: onAdvance,
               ),
             ),
           ],
@@ -251,6 +232,35 @@ class _StatusSteps extends StatelessWidget {
             if (step != ScanStatus.values.last) const SizedBox(width: 6),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// A count bar with the design's green gradient.
+class _GradientBar extends StatelessWidget {
+  const _GradientBar({required this.fraction});
+
+  final double fraction;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 8,
+      child: DecoratedBox(
+        decoration: const BoxDecoration(color: Color(0x1F14402F)),
+        child: FractionallySizedBox(
+          alignment: Alignment.centerLeft,
+          widthFactor: fraction.clamp(0, 1),
+          child: const DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+              gradient: LinearGradient(
+                colors: [Color(0xFF2A7A57), Color(0xFF14402F)],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

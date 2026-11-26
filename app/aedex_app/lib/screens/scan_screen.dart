@@ -11,6 +11,7 @@ import '../detection/detector.dart';
 import '../models/scan.dart';
 import '../theme.dart';
 import '../widgets/glass_background.dart';
+import '../widgets/glass_controls.dart';
 import '../widgets/glass_panel.dart';
 
 /// Take or pick a photo, let the model find containers, save it as a scan.
@@ -109,18 +110,17 @@ class _ScanScreenState extends State<ScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GlassBackground(
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
-          child: switch (_step) {
-            _Step.start => _buildStart(),
-            _Step.working => _buildWorking(),
-            _Step.result || _Step.saving => _buildResult(),
-          },
+    return switch (_step) {
+      _Step.start => GlassBackground(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+            child: _buildStart(),
+          ),
         ),
       ),
-    );
+      _Step.working || _Step.result || _Step.saving => _buildPhotoView(),
+    };
   }
 
   Widget _errorBox() => _error == null
@@ -143,187 +143,368 @@ class _ScanScreenState extends State<ScanScreen> {
       children: [
         const Text(
           'Scan a spot',
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800),
+          style: TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.6,
+          ),
         ),
         const SizedBox(height: 6),
         const Text(
           'Take a clear photo of the area. The app finds containers that can '
           'hold rainwater and puts the result on the map. The photo itself is '
           'not saved.',
-          style: TextStyle(color: AedexColors.muted, height: 1.4),
+          style: TextStyle(color: Color(0xFF2E3833), height: 1.45),
         ),
         const Spacer(),
-        if (!supported)
-          const GlassPanel(
-            child: Text(
-              'Scanning runs in the phone app. In the browser you can look at '
-              'the map, hotspots and filters.',
-            ),
-          )
-        else ...[
-          SizedBox(
-            height: 64,
-            child: FilledButton.icon(
-              onPressed: () => _scan(ImageSource.camera),
-              icon: const Icon(Icons.photo_camera_outlined),
-              label: const Text('Take a photo', style: TextStyle(fontSize: 17)),
-            ),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 56,
-            child: OutlinedButton.icon(
-              onPressed: () => _scan(ImageSource.gallery),
-              icon: const Icon(Icons.photo_library_outlined),
-              label: const Text('Choose from gallery'),
-            ),
-          ),
-        ],
-        _errorBox(),
-      ],
-    );
-  }
-
-  Widget _buildWorking() => Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      if (_photo != null)
-        ClipRRect(
-          borderRadius: BorderRadius.circular(24),
-          child: Image.memory(_photo!, height: 320, fit: BoxFit.cover),
-        ),
-      const SizedBox(height: 20),
-      const CircularProgressIndicator(),
-      const SizedBox(height: 12),
-      const Text('Looking for containers…'),
-    ],
-  );
-
-  Widget _buildResult() {
-    final r = _result!;
-    final counts = countByLabel(r.detections);
-    final total = r.detections.length;
-    final risk = riskFor(total);
-    final saving = _step == _Step.saving;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Expanded(
-          child: Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: AspectRatio(
-                aspectRatio: r.photoWidth / r.photoHeight,
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.memory(_photo!, fit: BoxFit.fill),
-                    CustomPaint(
-                      painter: BoxPainter(
-                        detections: r.detections,
-                        photoWidth: r.photoWidth,
-                        photoHeight: r.photoHeight,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
         GlassPanel(
-          margin: const EdgeInsets.only(top: 12),
+          borderRadius: 30,
+          padding: const EdgeInsets.all(18),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
+              const Row(
                 children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: AedexColors.forRisk(risk),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      '$total',
-                      style: TextStyle(
-                        color: AedexColors.onRisk(risk),
-                        fontWeight: FontWeight.w800,
-                        fontSize: 18,
-                      ),
-                    ),
+                  Icon(
+                    Icons.tips_and_updates_outlined,
+                    color: AedexColors.brand,
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      total == 0
-                          ? 'No containers found'
-                          : '$total possible breeding ${total == 1 ? 'site' : 'sites'}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                      ),
+                      'Stand back so the whole yard or canal fits. '
+                      'Keep faces and house numbers out of the photo.',
+                      style: TextStyle(fontSize: 13, height: 1.4),
                     ),
                   ),
                 ],
               ),
-              if (counts.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              if (!supported)
+                const Text(
+                  'Scanning runs in the phone app. In the browser you can look '
+                  'at the map, hotspots and filters.',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                )
+              else ...[
+                TintButton(
+                  label: 'Take a photo',
+                  icon: Icons.photo_camera_outlined,
+                  height: 60,
+                  onPressed: () => _scan(ImageSource.camera),
+                ),
                 const SizedBox(height: 10),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: [
-                    for (final e in counts.entries)
-                      Chip(
-                        label: Text(
-                          '${e.key.replaceAll('-', ' ')} × ${e.value}',
+                DecoratedBox(
+                  decoration: frostDecoration(radius: 26),
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: InkWell(
+                      customBorder: const StadiumBorder(),
+                      onTap: () => _scan(ImageSource.gallery),
+                      child: const SizedBox(
+                        height: 52,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.photo_library_outlined,
+                              color: AedexColors.brand,
+                              size: 20,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'Choose from gallery',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: AedexColors.brand,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                  ],
+                    ),
+                  ),
                 ),
               ],
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                value: _privateHome,
-                onChanged: saving
-                    ? null
-                    : (v) => setState(() => _privateHome = v),
-                title: const Text(
-                  'Private home',
-                  style: TextStyle(fontWeight: FontWeight.w700),
-                ),
-                subtitle: Text(
-                  _privateHome
-                      ? 'Saved at street level (about 100 m), never the exact house.'
-                      : 'Public place: saved at the exact spot.',
-                ),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: saving ? null : _reset,
-                      child: const Text('Retake'),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    flex: 2,
-                    child: FilledButton(
-                      onPressed: saving ? null : _save,
-                      child: Text(saving ? 'Saving…' : 'Save to map'),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
         _errorBox(),
       ],
+    );
+  }
+
+  /// The photo fills the screen; the result floats over it on glass.
+  Widget _buildPhotoView() {
+    final r = _result;
+    final working = _step == _Step.working;
+    final saving = _step == _Step.saving;
+
+    return ColoredBox(
+      color: const Color(0xFF0B120E),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: Center(
+              child: r == null
+                  ? Image.memory(_photo!, fit: BoxFit.contain)
+                  : AspectRatio(
+                      aspectRatio: r.photoWidth / r.photoHeight,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.memory(_photo!, fit: BoxFit.fill),
+                          CustomPaint(
+                            painter: BoxPainter(
+                              detections: r.detections,
+                              photoWidth: r.photoWidth,
+                              photoHeight: r.photoHeight,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+            ),
+          ),
+          Positioned(
+            left: 16,
+            right: 16,
+            top: 0,
+            child: SafeArea(
+              bottom: false,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: Row(
+                  children: [
+                    GlassIconButton(
+                      icon: Icons.close,
+                      tooltip: 'Retake',
+                      dark: true,
+                      onPressed: working || saving ? null : _reset,
+                    ),
+                    const Spacer(),
+                    if (!working)
+                      _PrecisionChip(
+                        privateHome: _privateHome,
+                        onTap: saving
+                            ? null
+                            : () =>
+                                  setState(() => _privateHome = !_privateHome),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 96),
+                child: working
+                    ? const GlassPanel(
+                        dark: true,
+                        borderRadius: 26,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(width: 14),
+                            Text(
+                              'Looking for containers…',
+                              style: TextStyle(
+                                color: AedexDark.text,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [_resultSheet(r!, saving), _errorBox()],
+                      ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _resultSheet(DetectionResult r, bool saving) {
+    final counts = countByLabel(r.detections);
+    final total = r.detections.length;
+    final risk = riskFor(total);
+    final (tag, tagColor) = switch (risk) {
+      RiskLevel.high => ('HIGH RISK', const Color(0xFF9E2A1E)),
+      RiskLevel.some => ('SOME RISK', const Color(0xFF7A5A00)),
+      RiskLevel.clear => ('ALL CLEAR', AedexColors.brand),
+    };
+
+    return GlassPanel(
+      borderRadius: 30,
+      padding: const EdgeInsets.all(18),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            tag,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.5,
+              color: tagColor,
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            total == 0
+                ? 'No containers found'
+                : '$total possible breeding ${total == 1 ? 'site' : 'sites'}',
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.3,
+            ),
+          ),
+          if (counts.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final e in counts.entries)
+                  DecoratedBox(
+                    decoration: frostDecoration(radius: 14),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 11,
+                        vertical: 7,
+                      ),
+                      child: Text(
+                        '${e.key.replaceAll('-', ' ')} × ${e.value}',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Icon(
+                _privateHome ? Icons.shield_outlined : Icons.place_outlined,
+                size: 18,
+                color: AedexColors.brand,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  _privateHome
+                      ? 'Private home: saved at street level (about 100 m), '
+                            'never the exact house.'
+                      : 'Public place: saved at the exact spot.',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF2E3833),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                    backgroundColor: const Color(0x99FFFFFF),
+                    side: const BorderSide(color: Color(0xE6FFFFFF)),
+                  ),
+                  onPressed: saving ? null : _reset,
+                  child: const Text('Retake'),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                flex: 2,
+                child: TintButton(
+                  label: saving ? 'Saving…' : 'Save to map',
+                  icon: Icons.add_location_alt_outlined,
+                  onPressed: saving ? null : _save,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// "Street level" (private home) or "Exact spot" (public place). Tap to switch.
+class _PrecisionChip extends StatelessWidget {
+  const _PrecisionChip({required this.privateHome, required this.onTap});
+
+  final bool privateHome;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      button: true,
+      label: privateHome
+          ? 'Street level, private home. Tap for exact spot.'
+          : 'Exact spot, public place. Tap for street level.',
+      excludeSemantics: true,
+      child: DecoratedBox(
+        decoration: frostDecoration(radius: 24, dark: true),
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            customBorder: const StadiumBorder(),
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    privateHome ? Icons.shield_outlined : Icons.place_outlined,
+                    color: Colors.white,
+                    size: 18,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    privateHome ? 'Street level' : 'Exact spot',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.swap_horiz, color: Colors.white70, size: 18),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -344,10 +525,21 @@ class BoxPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final sx = size.width / photoWidth;
     final sy = size.height / photoHeight;
+    // A blurred wide line under a sharp thin one looks like a glow.
+    final glow = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 8
+      ..color = const Color(0x99F2C14E)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
     final stroke = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3
-      ..color = const Color(0xFFF2C14E);
+      ..strokeWidth = 2.5
+      ..color = const Color(0xFFFFD66B);
+    final labelFill = Paint()..color = const Color(0xB30B120E);
+    final labelEdge = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1
+      ..color = const Color(0x66FFFFFF);
     for (final d in detections) {
       final r = Rect.fromLTRB(
         d.box.left * sx,
@@ -355,26 +547,32 @@ class BoxPainter extends CustomPainter {
         d.box.right * sx,
         d.box.bottom * sy,
       );
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(r, const Radius.circular(6)),
-        stroke,
-      );
+      final box = RRect.fromRectAndRadius(r, const Radius.circular(10));
+      canvas.drawRRect(box, glow);
+      canvas.drawRRect(box, stroke);
+
+      // A small smoky glass label: "Tire 94%".
       final tp = TextPainter(
         text: TextSpan(
-          text: ' ${d.label} ${(d.score * 100).round()}% ',
+          text: '${d.label.replaceAll('-', ' ')} ${(d.score * 100).round()}%',
           style: const TextStyle(
-            color: Color(0xFF3A2A00),
-            backgroundColor: Color(0xFFF2C14E),
+            color: Colors.white,
             fontSize: 12,
             fontWeight: FontWeight.w700,
           ),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
-      tp.paint(
-        canvas,
-        Offset(r.left, (r.top - tp.height).clamp(0, size.height)),
+      final w = tp.width + 16, h = tp.height + 8;
+      final top = (r.top - h - 4).clamp(0.0, size.height - h);
+      final left = r.left.clamp(0.0, (size.width - w).clamp(0.0, size.width));
+      final pill = RRect.fromRectAndRadius(
+        Rect.fromLTWH(left, top, w, h),
+        Radius.circular(h / 2),
       );
+      canvas.drawRRect(pill, labelFill);
+      canvas.drawRRect(pill, labelEdge);
+      tp.paint(canvas, Offset(left + 8, top + 4));
     }
   }
 

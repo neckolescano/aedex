@@ -138,6 +138,10 @@ void main() {
 
   testWidgets('Filters: the button counts matching scans', (tester) async {
     ScanFilter? result;
+    // A tall phone-like screen, so every tile is visible above the button.
+    tester.view.physicalSize = const Size(420, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(
       MaterialApp(
         home: Builder(
