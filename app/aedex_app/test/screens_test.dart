@@ -52,7 +52,16 @@ class FakeDetector implements ContainerDetector {
   void dispose() {}
 }
 
-Widget wrap(Widget child) => MaterialApp(home: Scaffold(body: child));
+// Reduce motion is on, as a phone user can choose: Patak stands still, so
+// pumpAndSettle can finish. Patak's motion is tested in patak_test.dart.
+Widget wrap(Widget child) => MaterialApp(
+  home: Builder(
+    builder: (context) => MediaQuery(
+      data: MediaQuery.of(context).copyWith(disableAnimations: true),
+      child: Scaffold(body: child),
+    ),
+  ),
+);
 
 void main() {
   final sample = parseScans(File('../sample_scans.json').readAsStringSync());
@@ -114,6 +123,10 @@ void main() {
     await tester.tap(find.text('Take a photo'));
     await tester.pumpAndSettle();
     expect(find.text('3 possible breeding sites'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate((w) => w is Patak && w.pose == PatakPose.worried),
+      findsOneWidget,
+    );
     expect(find.text('Tire × 2'), findsOneWidget);
 
     await tester.tap(find.text('Save to map'));
@@ -124,6 +137,29 @@ void main() {
     // "Private home" is on by default: rounded to street level.
     expect(saved!.precision, LocationPrecision.street);
     expect(saved!.location.latitude, closeTo(14.601, 1e-9));
+  });
+
+  testWidgets('Scan: nothing found -> happy Patak, all clear', (tester) async {
+    final photo = Uint8List.fromList(
+      img.encodePng(img.Image(width: 120, height: 90)),
+    );
+    await tester.pumpWidget(
+      wrap(
+        ScanScreen(
+          detector: _NothingFound(),
+          pickPhoto: (_) async => photo,
+          locate: () async => const LatLng(14.6, 120.98),
+          onSave: (_) async {},
+        ),
+      ),
+    );
+    await tester.tap(find.text('Take a photo'));
+    await tester.pumpAndSettle();
+    expect(find.text('All clear!'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate((w) => w is Patak && w.pose == PatakPose.happy),
+      findsOneWidget,
+    );
   });
 
   testWidgets('Scan: a missing model file is explained', (tester) async {
@@ -177,6 +213,17 @@ void main() {
     await tester.pumpAndSettle();
     expect(result!.statuses, {ScanStatus.reported, ScanStatus.assigned});
   });
+}
+
+class _NothingFound extends FakeDetector {
+  @override
+  Future<DetectionResult> detect(Uint8List photoBytes) async =>
+      const DetectionResult(
+        detections: [],
+        photoWidth: 120,
+        photoHeight: 90,
+        inputShape: [1, 3, 640, 640],
+      );
 }
 
 class _MissingModel extends FakeDetector {

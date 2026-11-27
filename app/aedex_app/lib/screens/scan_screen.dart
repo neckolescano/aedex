@@ -13,6 +13,7 @@ import '../theme.dart';
 import '../widgets/glass_background.dart';
 import '../widgets/glass_controls.dart';
 import '../widgets/glass_panel.dart';
+import '../widgets/patak.dart';
 
 /// Take or pick a photo, let the model find containers, save it as a scan.
 class ScanScreen extends StatefulWidget {
@@ -302,17 +303,18 @@ class _ScanScreenState extends State<ScanScreen> {
                     ? const GlassPanel(
                         dark: true,
                         borderRadius: 26,
+                        padding: EdgeInsets.fromLTRB(10, 8, 16, 8),
                         child: Row(
                           children: [
-                            SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.5,
-                                color: Colors.white,
-                              ),
+                            // Patak sweeps the magnifier while the model
+                            // runs; butter props so it reads on dark glass.
+                            Patak(
+                              size: 56,
+                              animate: true,
+                              onDark: true,
+                              semanticLabel: 'Patak, looking for containers',
                             ),
-                            SizedBox(width: 14),
+                            SizedBox(width: 10),
                             Text(
                               'Looking for containers…',
                               style: TextStyle(
@@ -343,7 +345,7 @@ class _ScanScreenState extends State<ScanScreen> {
     final (tag, tagColor) = switch (risk) {
       RiskLevel.high => ('HIGH RISK', const Color(0xFF9E2A1E)),
       RiskLevel.some => ('SOME RISK', const Color(0xFF7A5A00)),
-      RiskLevel.clear => ('ALL CLEAR', AedexColors.brand),
+      RiskLevel.clear => ('NO CONTAINERS FOUND', AedexColors.brand),
     };
 
     return GlassPanel(
@@ -353,21 +355,46 @@ class _ScanScreenState extends State<ScanScreen> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            tag,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.5,
-              color: tagColor,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            total == 0
-                ? 'No containers found'
-                : '$total possible breeding ${total == 1 ? 'site' : 'sites'}',
-            style: aedexHeading(context, const TextStyle(fontSize: 20)),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tag,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.5,
+                        color: tagColor,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      total == 0
+                          ? 'All clear!'
+                          : '$total possible breeding '
+                                '${total == 1 ? 'site' : 'sites'}',
+                      style: aedexHeading(
+                        context,
+                        const TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              // Worried when something was found, happy when it is clear.
+              Patak(
+                pose: total == 0 ? PatakPose.happy : PatakPose.worried,
+                size: 60,
+                animate: true,
+                semanticLabel: total == 0
+                    ? 'Patak, happy: all clear'
+                    : 'Patak, looking worried: $total found',
+              ),
+            ],
           ),
           if (counts.isNotEmpty) ...[
             const SizedBox(height: 8),
