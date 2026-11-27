@@ -378,3 +378,88 @@ The legend and the scan card are **frosted glass panels** (`lib/widgets/glass_pa
 3. Why do street-level scans get a circle, and why 60 m instead of a pin-sized circle?
 4. What does `setState` do when you tap a pin?
 5. What does `BackdropFilter` blur, and why do we keep it to a few panels?
+
+## Part 7: Real scans, the model on the phone, hotspots and filters (2026-11-27)
+
+**Folder:** `app/aedex_app/`. **Branch:** `hotspot-map`. **Contract:** [`docs/model-for-app.md`](docs/model-for-app.md).
+The app no longer loads sample data. It starts empty, and every pin comes from a real scan: take a photo, the model counts the containers, and the scan is saved with the phone's location. Four tabs: **Home**, **Map**, **Scan** and **Hotspots**, plus a **Filters** page opened from the map.
+
+### Before you run it
+Copy `aedex-v1.tflite` from the `app-model` Drive folder into `app/aedex_app/assets/models/`. Git ignores it (`*.tflite`). `labels.txt` and `aedex-v1-info.json` are already in that folder and committed, because they are tiny and the tests read them. Without the model file the app still runs; the Scan tab says the file is missing.
+
+### From photo to pin
+| Step | File | What happens |
+|---|---|---|
+| 1. Photo | `screens/scan_screen.dart` | `image_picker` opens the camera or gallery. |
+| 2. Letterbox | `detection/preprocess.dart` | The photo is shrunk so its long side is 640, keeping its shape, and the rest is filled with grey. That's how YOLO saw photos in training. Pixels become numbers from 0 to 1. |
+| 3. Model | `detection/detector_tflite.dart` | TensorFlow Lite runs `aedex-v1.tflite` and returns 8,400 candidate boxes. |
+| 4. Clean-up | `detection/postprocess.dart` | Each box keeps its best class. Boxes under 0.15 are dropped. Duplicates of the same object are merged (non-maximum suppression, IoU 0.45). Boxes are moved back onto the original photo. |
+| 5. Scan record | `data/scan_builder.dart` | Boxes are counted per class name, then the location, time and status `reported` are added. The photo itself is **not** saved. |
+| 6. Save | `data/scan_store.dart` | The scan is saved on the phone (`shared_preferences`) and appears on the map. |
+
+### The channels question, answered in code
+The model note says the input is channels first (`[1, 3, 640, 640]`). Instead of trusting the note, the app **reads the input shape from the model** when it loads it. If the second number is 3 it fills red, then green, then blue (channels first); otherwise it puts each pixel's red, green and blue together (channels last). So a re-export in either layout works without a code change. The tests check both layouts on a tiny red-and-blue picture.
+
+### The v2 swap rules (from the contract)
+1. Class names come from `labels.txt` (`parseLabels`), never a list in the code.
+2. The number of classes comes from the label count: the output check expects `4 + labels` values per box and says so clearly if `labels.txt` doesn't fit the model.
+3. The model file name is in one place: `ModelFiles.current` in `detection/model_config.dart`.
+4. Pin colours depend on the container **count**, and the card shows whatever class names a scan has, so a new class like Pail-Basin shows up with no change.
+
+Thresholds (0.15 and 0.45) are read from `aedex-v1-info.json`, so Member 1's export decides them.
+
+### Privacy
+- **Private home** is on by default when saving. The position is rounded to 3 decimal places (about 100 m), so the scan says "this street", not "this house". Turn it off for public places such as a canal or a vacant lot.
+- Photos are never stored or uploaded, so faces and house numbers in them go nowhere.
+
+### Hotspots (`hotspots/zones.dart`)
+Scans are grouped into squares of about 150 m. Each square with scans is a **zone**, ranked by containers still **waiting** (reported or assigned). Zone A is "clean first". The heat circles grow with the number of containers and take the colour of the risk. Squares are simple and always give the same answer. The cost is that two scans 10 m apart can land on either side of a line.
+
+### Filters (`filters/scan_filter.dart`)
+Status, days and risk level. The map shows "5 of 10 scans shown" and a badge with how many filters are on. The Filters page shows how many scans will match before you press the button.
+
+### The clean-up flow
+Each scan card has a button for the next step: *Assign a clean-up team* → *Mark as cleaned* → *Verify the clean-up*. Home shows how many spots are cleaned, and cleaned spots stop counting toward hotspots.
+
+### Saved on this phone only (for now)
+Scans are stored on the phone that made them, so two phones don't see each other's scans yet. A shared map for a whole barangay needs a server (for example Firebase). That's a team decision. `ScanStorage` is the one class that would change.
+
+### What was checked
+- `flutter analyze`: no issues. `flutter test`: 40 tests pass.
+  - Covered: labels, thresholds, both input layouts, threshold and duplicate removal, box positions, both output layouts, a labels file that doesn't fit, scan records and rounding, save and load, the status flow, zones, filters, Home, Scan with a stand-in model, and Filters.
+- **Not checked:** the real model on a phone. There's no Android phone or emulator on this laptop, and TensorFlow Lite doesn't run in the browser. The first phone test should be a clear photo of a tire or a bottle (Nicho's request).
+
+### Check questions
+1. Why does the app read the input shape from the model instead of using the shape written in the info file?
+2. The model returns 8,400 boxes. Name the two steps that turn them into a handful of real containers.
+3. What changes, and what stays the same, when model v2 with Pail-Basin arrives?
+4. Why are private homes rounded to about 100 m, and why is the photo not saved?
+
+## Part 8: Making the app match the design (2026-11-27)
+The private design mock-up had five screens in a "liquid glass" style. This part brings the Flutter screens close to it. No data or logic changed; only how things look.
+
+### Shared glass pieces (`widgets/glass_controls.dart`)
+- **TintButton**: the main action, a deep-green glass pill ("Save to map", "Show 7 scans").
+- **GlassChip** and **GlassIconButton**: frosted white when off, green when on.
+- **CountBadge**: the glossy coloured square with a container count.
+- `tintDecoration` and `frostDecoration` are plain `BoxDecoration`s without blur. Real blur (`BackdropFilter`) is slow when there are many small items, so only the big panels blur.
+
+### The font
+Plus Jakarta Sans through the `google_fonts` package. It downloads once and is cached. Version 9 of that package is built on Flutter's new `material_ui` package, which has its own `TextTheme` type, so `theme.dart` styles each text style one by one instead of using the package's `...TextTheme()` shortcut.
+
+### Screen by screen
+- **Home**: progress ring, a "Clean first" card with the top zone, latest scans.
+- **Map**: count pill, status chips with counts (tap one to show only that status), a locate button, and a summary card when no pin is selected.
+- **Hotspots**: dark map tiles, glowing heat rings, smoky zone badges and zone cards. The coloured bar in each card shows how far the clean-up has got (red reported, yellow assigned, green cleaned, blue verified).
+- **Filters**: status as four tiles, a strip of the last days that have scans (tap a day to show only that day), and risk pills.
+- **Scan**: the photo fills the screen with glowing boxes and small glass labels. The result sheet floats on top. The "Street level / Exact spot" chip at the top switches between private home and public place.
+
+### What was checked
+- `flutter analyze`: no issues. `flutter test`: 40 tests pass. The Filters test now uses a phone-sized test screen so every tile is on screen.
+- Web build checked in the browser at phone size: Home, Map, Hotspots and Filters, with the test data loaded only into the browser for that check (and removed after). Filtering to one day without "Verified" showed the right count.
+- **Not checked:** the Scan result screen with a real photo. Scanning needs the phone app (the browser can't run the model), and there is no Android phone or emulator on this laptop. The widget test covers it with a stand-in model.
+
+### Check questions
+1. Why do the small chips use a plain decoration instead of real blur?
+2. In the Hotspots card, what does a bar that is mostly green and blue tell a barangay worker?
+3. Why did the font need a small workaround with `google_fonts` version 9?

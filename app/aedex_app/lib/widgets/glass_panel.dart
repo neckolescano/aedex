@@ -15,7 +15,11 @@ class GlassPanel extends StatelessWidget {
     this.padding = const EdgeInsets.all(16),
     this.margin = EdgeInsets.zero,
     this.blur = 20,
+    this.dark = false,
   });
+
+  /// Smoky glass for dark screens (Hotspots) instead of frosted white.
+  final bool dark;
 
   final Widget child;
   final double borderRadius;
@@ -34,11 +38,11 @@ class GlassPanel extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           borderRadius: radius,
-          boxShadow: const [
+          boxShadow: [
             BoxShadow(
-              color: Color(0x29102219),
+              color: dark ? const Color(0x66000000) : const Color(0x29102219),
               blurRadius: 30,
-              offset: Offset(0, 10),
+              offset: const Offset(0, 10),
             ),
           ],
         ),
@@ -51,12 +55,18 @@ class GlassPanel extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: radius,
                 // Fairly solid white keeps text readable over a busy map.
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xC7FFFFFF), Color(0x85FFFFFF)],
+                  colors: dark
+                      ? const [Color(0x29FFFFFF), Color(0x0DFFFFFF)]
+                      : const [Color(0xC7FFFFFF), Color(0x85FFFFFF)],
                 ),
-                border: Border.all(color: const Color(0xBFFFFFFF)),
+                border: Border.all(
+                  color: dark
+                      ? const Color(0x38FFFFFF)
+                      : const Color(0xBFFFFFFF),
+                ),
               ),
               child: Stack(
                 children: [
@@ -78,7 +88,12 @@ class GlassPanel extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Padding(padding: padding, child: child),
+                  // A see-through Material so list tiles and buttons inside
+                  // can draw their tap ripple on the glass.
+                  Material(
+                    type: MaterialType.transparency,
+                    child: Padding(padding: padding, child: child),
+                  ),
                 ],
               ),
             ),

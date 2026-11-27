@@ -1,0 +1,7 @@
+Bottle
+Coconut-Exocarp
+Drain-Inlet
+Tire
+Vase
+Cup
+Plastic-Container

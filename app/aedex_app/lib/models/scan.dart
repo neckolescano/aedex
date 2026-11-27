@@ -58,4 +58,32 @@ class Scan {
       status: ScanStatus.values.byName(json['status'] as String),
     );
   }
+
+  /// The same record shape as the task file, so saved scans and the
+  /// model side always agree.
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'time': time.toIso8601String(),
+    'lat': location.latitude,
+    'lng': location.longitude,
+    'location_precision': precision.name,
+    'counts': counts,
+    'status': status.name,
+  };
+
+  /// A copy with a new status (the clean-up flow moves a scan forward).
+  Scan copyWith({ScanStatus? status}) => Scan(
+    id: id,
+    time: time,
+    location: location,
+    precision: precision,
+    counts: counts,
+    status: status ?? this.status,
+  );
+}
+
+/// The step after [status] in the clean-up flow, or null at the end.
+ScanStatus? nextStatus(ScanStatus status) {
+  final i = status.index + 1;
+  return i < ScanStatus.values.length ? ScanStatus.values[i] : null;
 }

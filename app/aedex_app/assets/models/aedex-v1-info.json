@@ -1,0 +1,31 @@
+{
+  "version": "v1",
+  "model_file": "aedex-v1.tflite",
+  "labels_file": "labels.txt",
+  "classes": [
+    "Bottle",
+    "Coconut-Exocarp",
+    "Drain-Inlet",
+    "Tire",
+    "Vase",
+    "Cup",
+    "Plastic-Container"
+  ],
+  "imgsz": 640,
+  "conf_threshold": 0.15,
+  "iou_threshold": 0.45,
+  "input_shape": [1, 3, 640, 640],
+  "output_shape": [1, 11, 8400],
+  "quantize": "none (float32)",
+  "test_scores_pt": {
+    "precision": 0.8464297800445024,
+    "recall": 0.739065502871381,
+    "mAP50": 0.7997930362886968
+  },
+  "test_scores_tflite": {
+    "precision": 0.9063929038284775,
+    "recall": 0.7134317915409748,
+    "mAP50": 0.8150753101358543
+  },
+  "exported": "2026-11-25"
+}

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/scan.dart';
 import '../theme.dart';
+import 'glass_controls.dart';
 import 'glass_panel.dart';
 import 'scan_pin.dart';
 
@@ -36,10 +37,20 @@ String _capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 /// The card that slides up when a pin is tapped:
 /// counts per class, date, location type and clean-up status.
 class ScanCard extends StatelessWidget {
-  const ScanCard({super.key, required this.scan, required this.onClose});
+  const ScanCard({
+    super.key,
+    required this.scan,
+    required this.onClose,
+    this.onAdvance,
+    this.bottomMargin = 16,
+  });
 
   final Scan scan;
   final VoidCallback onClose;
+
+  /// Moves the scan to its next clean-up step. Null hides the button.
+  final VoidCallback? onAdvance;
+  final double bottomMargin;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +64,7 @@ class ScanCard extends StatelessWidget {
         : 'Exact spot (public place)';
 
     return GlassPanel(
-      margin: const EdgeInsets.fromLTRB(12, 0, 12, 16),
+      margin: EdgeInsets.fromLTRB(12, 0, 12, bottomMargin),
       borderRadius: 30,
       padding: const EdgeInsets.fromLTRB(20, 16, 12, 20),
       child: Column(
@@ -63,22 +74,11 @@ class ScanCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  color: AedexColors.forRisk(risk),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  '$total',
-                  style: TextStyle(
-                    color: AedexColors.onRisk(risk),
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
+              CountBadge(
+                count: total,
+                color: AedexColors.forRisk(risk),
+                textColor: AedexColors.onRisk(risk),
+                size: 46,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -134,12 +134,7 @@ class ScanCard extends StatelessWidget {
                     Expanded(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: e.value / maxCount,
-                          minHeight: 8,
-                          color: AedexColors.brand,
-                          backgroundColor: const Color(0x1F14402F),
-                        ),
+                        child: _GradientBar(fraction: e.value / maxCount),
                       ),
                     ),
                     SizedBox(
@@ -168,11 +163,27 @@ class ScanCard extends StatelessWidget {
             padding: const EdgeInsets.only(right: 8),
             child: _StatusSteps(status: scan.status),
           ),
+          if (onAdvance != null && nextStatus(scan.status) != null) ...[
+            const SizedBox(height: 14),
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: TintButton(
+                label: _nextAction[scan.status]!,
+                onPressed: onAdvance,
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 }
+
+const _nextAction = {
+  ScanStatus.reported: 'Assign a clean-up team',
+  ScanStatus.assigned: 'Mark as cleaned',
+  ScanStatus.cleaned: 'Verify the clean-up',
+};
 
 /// Four bars: reported -> assigned -> cleaned -> verified.
 class _StatusSteps extends StatelessWidget {
@@ -221,6 +232,35 @@ class _StatusSteps extends StatelessWidget {
             if (step != ScanStatus.values.last) const SizedBox(width: 6),
           ],
         ],
+      ),
+    );
+  }
+}
+
+/// A count bar with the design's green gradient.
+class _GradientBar extends StatelessWidget {
+  const _GradientBar({required this.fraction});
+
+  final double fraction;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 8,
+      child: DecoratedBox(
+        decoration: const BoxDecoration(color: Color(0x1F14402F)),
+        child: FractionallySizedBox(
+          alignment: Alignment.centerLeft,
+          widthFactor: fraction.clamp(0, 1),
+          child: const DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+              gradient: LinearGradient(
+                colors: [Color(0xFF2A7A57), Color(0xFF14402F)],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
