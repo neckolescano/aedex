@@ -63,117 +63,132 @@ class ScanCard extends StatelessWidget {
         ? 'Street level (homes stay private)'
         : 'Exact spot (public place)';
 
+    // Never taller than about half the screen; scrolls on small phones.
+    final maxHeight = MediaQuery.sizeOf(context).height * 0.5;
     return GlassPanel(
       margin: EdgeInsets.fromLTRB(12, 0, 12, bottomMargin),
-      borderRadius: 30,
-      padding: const EdgeInsets.fromLTRB(20, 16, 12, 20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+      borderRadius: 24,
+      padding: const EdgeInsets.fromLTRB(14, 10, 6, 12),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: maxHeight),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CountBadge(
-                count: total,
-                color: AedexColors.forRisk(risk),
-                textColor: AedexColors.onRisk(risk),
-                size: 46,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CountBadge(
+                    count: total,
+                    color: AedexColors.forRisk(risk),
+                    textColor: AedexColors.onRisk(risk),
+                    size: 38,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${scanLabel(scan)} · $total '
+                          '${total == 1 ? 'container' : 'containers'}',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: AedexColors.ink,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '${formatScanTime(scan.time)} · $where',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: AedexColors.muted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    tooltip: 'Close',
+                    visualDensity: VisualDensity.compact,
+                    onPressed: onClose,
+                    icon: const Icon(Icons.close, size: 20),
+                  ),
+                ],
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${scanLabel(scan)} · $total '
-                      '${total == 1 ? 'container' : 'containers'}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: AedexColors.ink,
-                      ),
+              const SizedBox(height: 8),
+              if (entries.isEmpty)
+                const Text(
+                  'No containers found here. Area is clear.',
+                  style: TextStyle(color: AedexColors.muted),
+                )
+              else
+                for (final e in entries)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 5, right: 8),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 112,
+                          child: Text(
+                            e.key.replaceAll('-', ' '),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: _GradientBar(fraction: e.value / maxCount),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 24,
+                          child: Text(
+                            '${e.value}',
+                            textAlign: TextAlign.right,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '${formatScanTime(scan.time)} · $where',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AedexColors.muted,
-                      ),
-                    ),
-                  ],
+                  ),
+              const SizedBox(height: 6),
+              const Text(
+                'CLEAN-UP STATUS',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: AedexColors.muted,
+                  letterSpacing: 0.3,
                 ),
               ),
-              IconButton(
-                tooltip: 'Close',
-                onPressed: onClose,
-                icon: const Icon(Icons.close),
+              const SizedBox(height: 6),
+              Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: _StatusSteps(status: scan.status),
               ),
+              if (onAdvance != null && nextStatus(scan.status) != null) ...[
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: TintButton(
+                    label: _nextAction[scan.status]!,
+                    onPressed: onAdvance,
+                    height: 40,
+                  ),
+                ),
+              ],
             ],
           ),
-          const SizedBox(height: 14),
-          if (entries.isEmpty)
-            const Text(
-              'No containers found here. Area is clear.',
-              style: TextStyle(color: AedexColors.muted),
-            )
-          else
-            for (final e in entries)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8, right: 8),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 128,
-                      child: Text(
-                        e.key.replaceAll('-', ' '),
-                        style: const TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: _GradientBar(fraction: e.value / maxCount),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 28,
-                      child: Text(
-                        '${e.value}',
-                        textAlign: TextAlign.right,
-                        style: const TextStyle(fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-          const SizedBox(height: 10),
-          const Text(
-            'CLEAN-UP STATUS',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: AedexColors.muted,
-              letterSpacing: 0.3,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: _StatusSteps(status: scan.status),
-          ),
-          if (onAdvance != null && nextStatus(scan.status) != null) ...[
-            const SizedBox(height: 14),
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: TintButton(
-                label: _nextAction[scan.status]!,
-                onPressed: onAdvance,
-              ),
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }
@@ -205,7 +220,7 @@ class _StatusSteps extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    height: 6,
+                    height: 5,
                     decoration: BoxDecoration(
                       color: step.index <= current
                           ? AedexColors.brand
@@ -213,11 +228,11 @@ class _StatusSteps extends StatelessWidget {
                       borderRadius: BorderRadius.circular(3),
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 4),
                   Text(
                     _capitalize(step.name),
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: 10,
                       fontWeight: step.index == current
                           ? FontWeight.w800
                           : FontWeight.w500,
@@ -246,7 +261,7 @@ class _GradientBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 8,
+      height: 6,
       child: DecoratedBox(
         decoration: const BoxDecoration(color: Color(0x1F14402F)),
         child: FractionallySizedBox(

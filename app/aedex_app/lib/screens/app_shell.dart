@@ -121,10 +121,10 @@ class _GlassTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      minimum: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      minimum: const EdgeInsets.fromLTRB(12, 0, 12, 8),
       child: GlassPanel(
-        borderRadius: 34,
-        padding: const EdgeInsets.all(6),
+        borderRadius: 28,
+        padding: const EdgeInsets.all(4),
         child: Row(
           children: [
             for (var i = 0; i < _items.length; i++)
@@ -135,13 +135,13 @@ class _GlassTabBar extends StatelessWidget {
                   label: _items[i].$3,
                   excludeSemantics: true,
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(28),
+                    borderRadius: BorderRadius.circular(24),
                     onTap: () => onSelect(i),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
-                      height: 56,
+                      height: 46,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(28),
+                        borderRadius: BorderRadius.circular(24),
                         color: i == index
                             ? AedexColors.brand.withValues(alpha: 0.12)
                             : Colors.transparent,
@@ -151,6 +151,7 @@ class _GlassTabBar extends StatelessWidget {
                         children: [
                           Icon(
                             i == index ? _items[i].$2 : _items[i].$1,
+                            size: 20,
                             color: i == index
                                 ? AedexColors.brand
                                 : AedexColors.muted,
@@ -158,7 +159,7 @@ class _GlassTabBar extends StatelessWidget {
                           Text(
                             _items[i].$3,
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 10,
                               fontWeight: i == index
                                   ? FontWeight.w800
                                   : FontWeight.w600,

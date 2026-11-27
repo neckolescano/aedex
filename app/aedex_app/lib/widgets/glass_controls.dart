@@ -41,7 +41,7 @@ class TintButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.icon,
-    this.height = 50,
+    this.height = 46,
   });
 
   final String label;
@@ -70,7 +70,7 @@ class TintButton extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (icon != null) ...[
-                      Icon(icon, color: Colors.white, size: 20),
+                      Icon(icon, color: Colors.white, size: 18),
                       const SizedBox(width: 8),
                     ],
                     Flexible(
@@ -80,7 +80,7 @@ class TintButton extends StatelessWidget {
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,
-                          fontSize: 15,
+                          fontSize: 14,
                         ),
                       ),
                     ),
@@ -104,7 +104,7 @@ class GlassIconButton extends StatelessWidget {
     required this.onPressed,
     this.tinted = false,
     this.dark = false,
-    this.size = 48,
+    this.size = 42,
   });
 
   final IconData icon;
@@ -132,7 +132,7 @@ class GlassIconButton extends StatelessWidget {
               height: size,
               child: Icon(
                 icon,
-                size: 22,
+                size: size * 0.45,
                 color: tinted || dark ? Colors.white : AedexColors.brand,
               ),
             ),
@@ -176,13 +176,17 @@ class GlassChip extends StatelessWidget {
             customBorder: const StadiumBorder(),
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     label,
-                    style: TextStyle(color: color, fontWeight: FontWeight.w700),
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   if (trailing != null) ...[
                     const SizedBox(width: 6),
@@ -190,6 +194,7 @@ class GlassChip extends StatelessWidget {
                       trailing!,
                       style: TextStyle(
                         color: color.withValues(alpha: 0.75),
+                        fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

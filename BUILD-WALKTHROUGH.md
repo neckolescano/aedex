@@ -459,7 +459,17 @@ Plus Jakarta Sans through the `google_fonts` package. It downloads once and is c
 - Web build checked in the browser at phone size: Home, Map, Hotspots and Filters, with the test data loaded only into the browser for that check (and removed after). Filtering to one day without "Verified" showed the right count.
 - **Not checked:** the Scan result screen with a real photo. Scanning needs the phone app (the browser can't run the model), and there is no Android phone or emulator on this laptop. The widget test covers it with a stand-in model.
 
+### Smaller for small phones
+A teammate tested the app on a small phone and everything was too big. On the Map and Hotspots tabs the bars and cards stay on screen all the time, so every pixel they take hides part of the map.
+- The tab bar, top bar, chips and buttons are shorter (buttons 42 to 48 px instead of 50 to 60).
+- The Map's big summary card is now a slim strip: three numbers in one row, the colour legend, and a hint only when there is nothing to show.
+- The locate button moved from the top to just above that strip, so the top of the map stays clear.
+- The pin card is smaller and can never be taller than half the screen. On a very short phone it scrolls.
+- Hotspot cards are narrower and adjust to the screen width, leaving a peek of the next card so people know they can swipe.
+- Checked in the browser at 360 × 640, a common small Android size.
+
 ### Check questions
 1. Why do the small chips use a plain decoration instead of real blur?
 2. In the Hotspots card, what does a bar that is mostly green and blue tell a barangay worker?
 3. Why did the font need a small workaround with `google_fonts` version 9?
+4. Why does the pin card have a maximum height instead of a fixed one?

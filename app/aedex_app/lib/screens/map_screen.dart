@@ -108,7 +108,8 @@ class _MapScreenState extends State<MapScreen> {
             points: [for (final s in scans) s.location],
             onTap: () => setState(() => _selectedId = null),
             onMapReady: () => _mapReady = true,
-            topPadding: 170,
+            topPadding: 120,
+            bottomPadding: 160,
             layers: [
               // Street-level scans get a soft circle: "somewhere around
               // here", so nobody can point at one house.
@@ -156,29 +157,30 @@ class _MapScreenState extends State<MapScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                  padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
                   child: Row(
                     children: [
                       Expanded(
                         child: GlassPanel(
-                          borderRadius: 26,
+                          borderRadius: 21,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                            vertical: 15,
+                            horizontal: 14,
+                            vertical: 11,
                           ),
                           child: Row(
                             children: [
                               const Icon(
                                 Icons.place_outlined,
-                                size: 20,
+                                size: 18,
                                 color: Color(0xFF3E4943),
                               ),
-                              const SizedBox(width: 10),
+                              const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   _countText(scans.length),
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -187,7 +189,7 @@ class _MapScreenState extends State<MapScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 8),
                       Badge(
                         isLabelVisible: widget.filter.activeCount > 0,
                         label: Text('${widget.filter.activeCount}'),
@@ -195,7 +197,7 @@ class _MapScreenState extends State<MapScreen> {
                           icon: Icons.tune,
                           tooltip: 'Filters',
                           tinted: true,
-                          size: 52,
+                          size: 44,
                           onPressed: widget.onOpenFilters,
                         ),
                       ),
@@ -203,10 +205,10 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ),
                 SizedBox(
-                  height: 58,
+                  height: 46,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 4),
                     children: [
                       GlassChip(
                         label: 'All',
@@ -215,7 +217,7 @@ class _MapScreenState extends State<MapScreen> {
                         onTap: () => _pickStatus(null),
                       ),
                       for (final st in ScanStatus.values) ...[
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 6),
                         GlassChip(
                           label:
                               st.name[0].toUpperCase() + st.name.substring(1),
@@ -231,17 +233,6 @@ class _MapScreenState extends State<MapScreen> {
                     ],
                   ),
                 ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 16),
-                    child: GlassIconButton(
-                      icon: Icons.my_location,
-                      tooltip: 'Show my location',
-                      onPressed: _goToMe,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -252,14 +243,33 @@ class _MapScreenState extends State<MapScreen> {
             top: false,
             child: Padding(
               // Room for the floating tab bar.
-              padding: const EdgeInsets.only(bottom: 84),
-              child: selected != null
-                  ? ScanCard(
+              padding: const EdgeInsets.only(bottom: 62),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // The locate button rides just above the card, out of
+                  // the way of the bars at the top.
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 12, 8),
+                    child: GlassIconButton(
+                      icon: Icons.my_location,
+                      tooltip: 'Show my location',
+                      size: 40,
+                      onPressed: _goToMe,
+                    ),
+                  ),
+                  if (selected != null)
+                    ScanCard(
                       scan: selected,
                       onClose: () => setState(() => _selectedId = null),
                       onAdvance: () => widget.onAdvance(selected!.id),
+                      bottomMargin: 8,
                     )
-                  : _Summary(scans: scans, totalScans: widget.allScans.length),
+                  else
+                    _Summary(scans: scans, totalScans: widget.allScans.length),
+                ],
+              ),
             ),
           ),
         ),
@@ -277,7 +287,8 @@ class _MapScreenState extends State<MapScreen> {
   }
 }
 
-/// Shown when no pin is selected: totals, what the colours mean, what to do.
+/// Shown when no pin is selected: a slim strip with the totals and what the
+/// pin colours mean. It stays on screen, so it is kept small.
 class _Summary extends StatelessWidget {
   const _Summary({required this.scans, required this.totalScans});
 
@@ -287,27 +298,24 @@ class _Summary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget stat(String value, String label) => Expanded(
-      child: DecoratedBox(
-        decoration: frostDecoration(radius: 18),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              Text(
-                label,
-                style: const TextStyle(fontSize: 12, color: Color(0xFF3E4943)),
-              ),
-            ],
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          Text(
+            value,
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800),
           ),
-        ),
+          const SizedBox(width: 4),
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 11, color: Color(0xFF3E4943)),
+            ),
+          ),
+        ],
       ),
     );
 
@@ -315,60 +323,65 @@ class _Summary extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          width: 12,
-          height: 12,
+          width: 9,
+          height: 9,
           decoration: BoxDecoration(color: c, shape: BoxShape.circle),
         ),
-        const SizedBox(width: 6),
-        Text(label, style: const TextStyle(fontSize: 13)),
+        const SizedBox(width: 4),
+        Text(label, style: const TextStyle(fontSize: 11)),
       ],
     );
 
+    Widget divider() =>
+        Container(width: 1, height: 18, color: const Color(0x2914402F));
+
     final containers = scans.fold(0, (n, s) => n + s.totalContainers);
     final high = scans.where((s) => s.risk == RiskLevel.high).length;
+    // Only say something when the user has to do something.
     final hint = totalScans == 0
-        ? 'Open the Scan tab and take a photo of a spot. Its result appears here as a pin.'
+        ? 'Open Scan and take a photo. It appears here as a pin.'
         : scans.isEmpty
-        ? 'No scans match the filters. Open Filters to show more.'
-        : 'Tap a pin to see what was found there.';
+        ? 'No scans match the filters.'
+        : null;
 
     return GlassPanel(
-      margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-      borderRadius: 30,
-      padding: const EdgeInsets.all(18),
+      margin: const EdgeInsets.fromLTRB(12, 0, 12, 8),
+      borderRadius: 22,
+      padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Scans on the map',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
-          ),
-          const SizedBox(height: 12),
           Row(
             children: [
               stat('${scans.length}', 'scans'),
-              const SizedBox(width: 8),
+              divider(),
               stat('$containers', 'containers'),
-              const SizedBox(width: 8),
+              divider(),
               stat('$high', 'high-risk'),
             ],
           ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 14,
-            runSpacing: 8,
-            children: [
-              dot(AedexColors.clear, 'None'),
-              dot(AedexColors.some, '1–3'),
-              dot(AedexColors.high, '4 or more'),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            hint,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF3E4943)),
-          ),
+          const SizedBox(height: 8),
+          if (hint != null)
+            Text(
+              hint,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 12, color: Color(0xFF3E4943)),
+            )
+          else
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 12,
+              runSpacing: 4,
+              children: [
+                dot(AedexColors.clear, 'None'),
+                dot(AedexColors.some, '1–3'),
+                dot(AedexColors.high, '4+'),
+                const Text(
+                  'Tap a pin for details',
+                  style: TextStyle(fontSize: 11, color: Color(0xFF3E4943)),
+                ),
+              ],
+            ),
         ],
       ),
     );

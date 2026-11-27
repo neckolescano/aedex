@@ -90,7 +90,7 @@ class _FilterScreenState extends State<FilterScreen> {
           child: Stack(
             children: [
               ListView(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 110),
+                padding: const EdgeInsets.fromLTRB(12, 6, 12, 80),
                 children: [
                   Row(
                     children: [
@@ -109,8 +109,8 @@ class _FilterScreenState extends State<FilterScreen> {
                             onTap: () => setState(() => _f = ScanFilter.all),
                             child: const Padding(
                               padding: EdgeInsets.symmetric(
-                                horizontal: 18,
-                                vertical: 13,
+                                horizontal: 14,
+                                vertical: 10,
                               ),
                               child: Text(
                                 'Reset all',
@@ -126,11 +126,11 @@ class _FilterScreenState extends State<FilterScreen> {
                     ],
                   ),
                   const Padding(
-                    padding: EdgeInsets.fromLTRB(4, 18, 4, 18),
+                    padding: EdgeInsets.fromLTRB(4, 10, 4, 12),
                     child: Text(
                       'What do you want to see?',
                       style: TextStyle(
-                        fontSize: 30,
+                        fontSize: 24,
                         height: 1.1,
                         fontWeight: FontWeight.w800,
                         letterSpacing: -0.6,
@@ -142,9 +142,9 @@ class _FilterScreenState extends State<FilterScreen> {
                     crossAxisCount: 2,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: 1.45,
+                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 8,
+                    childAspectRatio: 2.0,
                     children: [
                       for (final st in ScanStatus.values)
                         _StatusTile(
@@ -162,11 +162,11 @@ class _FilterScreenState extends State<FilterScreen> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 22),
+                  const SizedBox(height: 14),
                   const _Label('Days'),
                   if (recent.isNotEmpty) ...[
                     SizedBox(
-                      height: 92,
+                      height: 68,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: recent.length,
@@ -205,7 +205,7 @@ class _FilterScreenState extends State<FilterScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 22),
+                  const SizedBox(height: 14),
                   const _Label('Containers found'),
                   Wrap(
                     spacing: 8,
@@ -231,13 +231,13 @@ class _FilterScreenState extends State<FilterScreen> {
                 ],
               ),
               Positioned(
-                left: 16,
-                right: 16,
-                bottom: 16,
+                left: 12,
+                right: 12,
+                bottom: 10,
                 child: TintButton(
                   label: 'Show $shown ${shown == 1 ? 'scan' : 'scans'}',
                   icon: Icons.map_outlined,
-                  height: 58,
+                  height: 48,
                   onPressed: () => Navigator.pop(context, _f),
                 ),
               ),
@@ -257,11 +257,11 @@ class _Label extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 0, 4, 10),
+      padding: const EdgeInsets.fromLTRB(4, 0, 4, 7),
       child: Text(
         text.toUpperCase(),
         style: const TextStyle(
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w800,
           letterSpacing: 0.6,
           color: Color(0xFF1E3A2D),
@@ -306,7 +306,7 @@ class _StatusTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.all(14),
+              padding: const EdgeInsets.fromLTRB(12, 10, 10, 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -315,7 +315,7 @@ class _StatusTile extends StatelessWidget {
                       Text(
                         '$count',
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 20,
                           height: 1,
                           fontWeight: FontWeight.w800,
                           color: fg,
@@ -323,8 +323,8 @@ class _StatusTile extends StatelessWidget {
                       ),
                       const Spacer(),
                       Container(
-                        width: 24,
-                        height: 24,
+                        width: 20,
+                        height: 20,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: selected
@@ -340,7 +340,7 @@ class _StatusTile extends StatelessWidget {
                         child: selected
                             ? const Icon(
                                 Icons.check,
-                                size: 15,
+                                size: 13,
                                 color: Colors.white,
                               )
                             : null,
@@ -351,12 +351,12 @@ class _StatusTile extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.w800,
                       color: fg,
                     ),
                   ),
-                  Text(hint, style: TextStyle(fontSize: 12, color: sub)),
+                  Text(hint, style: TextStyle(fontSize: 11, color: sub)),
                 ],
               ),
             ),
@@ -401,7 +401,7 @@ class _DayTile extends StatelessWidget {
             borderRadius: BorderRadius.circular(22),
             onTap: onTap,
             child: SizedBox(
-              width: 58,
+              width: 50,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -416,7 +416,7 @@ class _DayTile extends StatelessWidget {
                   Text(
                     '$day',
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 18,
                       fontWeight: FontWeight.w800,
                       color: fg,
                     ),
@@ -470,7 +470,7 @@ class _RiskPill extends StatelessWidget {
             customBorder: const StadiumBorder(),
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

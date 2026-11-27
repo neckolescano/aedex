@@ -65,7 +65,7 @@ class BaseMap extends StatelessWidget {
         // OSM requires visible credit: kept just below the top bars.
         SafeArea(
           child: Padding(
-            padding: EdgeInsets.only(top: topPadding - 64),
+            padding: EdgeInsets.only(top: topPadding - 22),
             child: const SimpleAttributionWidget(
               source: Text('OpenStreetMap contributors'),
               alignment: Alignment.topLeft,
