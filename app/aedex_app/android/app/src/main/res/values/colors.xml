@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Patak brand colours used by the launcher icon and the splash. -->
+    <color name="patak_cobalt">#1F3FBF</color>
+    <color name="patak_butter">#FFD84D</color>
+</resources>

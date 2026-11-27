@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One-colour submark for Android 13 themed icons. The phone only uses
+     the shape, so the eyes are holes cut out of the drop (evenOdd fill).
+     Same placement as ic_launcher_foreground.xml. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.6"
+        android:scaleY="0.6"
+        android:translateX="24"
+        android:translateY="23.4">
+        <path
+            android:fillColor="#FFFFFFFF"
+            android:fillType="evenOdd"
+            android:pathData="M50,6S18,44 18,64a32,32 0,0 0,64 0C82,44 50,6 50,6ZM35,64a5,5 0,1 0,10 0a5,5 0,1 0,-10 0ZM55,64a5,5 0,1 0,10 0a5,5 0,1 0,-10 0Z" />
+    </group>
+</vector>
