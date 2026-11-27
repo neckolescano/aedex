@@ -114,7 +114,7 @@ class _ScanScreenState extends State<ScanScreen> {
       _Step.start => GlassBackground(
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
+            padding: const EdgeInsets.fromLTRB(12, 6, 12, 72),
             child: _buildStart(),
           ),
         ),
@@ -144,9 +144,9 @@ class _ScanScreenState extends State<ScanScreen> {
         const Text(
           'Scan a spot',
           style: TextStyle(
-            fontSize: 30,
+            fontSize: 24,
             fontWeight: FontWeight.w800,
-            letterSpacing: -0.6,
+            letterSpacing: -0.5,
           ),
         ),
         const SizedBox(height: 6),
@@ -154,12 +154,12 @@ class _ScanScreenState extends State<ScanScreen> {
           'Take a clear photo of the area. The app finds containers that can '
           'hold rainwater and puts the result on the map. The photo itself is '
           'not saved.',
-          style: TextStyle(color: Color(0xFF2E3833), height: 1.45),
+          style: TextStyle(fontSize: 13, color: Color(0xFF2E3833), height: 1.4),
         ),
         const Spacer(),
         GlassPanel(
-          borderRadius: 30,
-          padding: const EdgeInsets.all(18),
+          borderRadius: 24,
+          padding: const EdgeInsets.all(14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -174,12 +174,12 @@ class _ScanScreenState extends State<ScanScreen> {
                     child: Text(
                       'Stand back so the whole yard or canal fits. '
                       'Keep faces and house numbers out of the photo.',
-                      style: TextStyle(fontSize: 13, height: 1.4),
+                      style: TextStyle(fontSize: 12, height: 1.35),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               if (!supported)
                 const Text(
                   'Scanning runs in the phone app. In the browser you can look '
@@ -190,19 +190,19 @@ class _ScanScreenState extends State<ScanScreen> {
                 TintButton(
                   label: 'Take a photo',
                   icon: Icons.photo_camera_outlined,
-                  height: 60,
+                  height: 50,
                   onPressed: () => _scan(ImageSource.camera),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 8),
                 DecoratedBox(
-                  decoration: frostDecoration(radius: 26),
+                  decoration: frostDecoration(radius: 22),
                   child: Material(
                     type: MaterialType.transparency,
                     child: InkWell(
                       customBorder: const StadiumBorder(),
                       onTap: () => _scan(ImageSource.gallery),
                       child: const SizedBox(
-                        height: 52,
+                        height: 44,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -267,8 +267,8 @@ class _ScanScreenState extends State<ScanScreen> {
             ),
           ),
           Positioned(
-            left: 16,
-            right: 16,
+            left: 12,
+            right: 12,
             top: 0,
             child: SafeArea(
               bottom: false,
@@ -301,7 +301,7 @@ class _ScanScreenState extends State<ScanScreen> {
             child: SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 96),
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 70),
                 child: working
                     ? const GlassPanel(
                         dark: true,
@@ -351,8 +351,8 @@ class _ScanScreenState extends State<ScanScreen> {
     };
 
     return GlassPanel(
-      borderRadius: 30,
-      padding: const EdgeInsets.all(18),
+      borderRadius: 24,
+      padding: const EdgeInsets.all(14),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -360,7 +360,7 @@ class _ScanScreenState extends State<ScanScreen> {
           Text(
             tag,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 10,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.5,
               color: tagColor,
@@ -372,13 +372,13 @@ class _ScanScreenState extends State<ScanScreen> {
                 ? 'No containers found'
                 : '$total possible breeding ${total == 1 ? 'site' : 'sites'}',
             style: const TextStyle(
-              fontSize: 22,
+              fontSize: 18,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.3,
             ),
           ),
           if (counts.isNotEmpty) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             Wrap(
               spacing: 6,
               runSpacing: 6,
@@ -388,13 +388,13 @@ class _ScanScreenState extends State<ScanScreen> {
                     decoration: frostDecoration(radius: 14),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 11,
-                        vertical: 7,
+                        horizontal: 9,
+                        vertical: 5,
                       ),
                       child: Text(
                         '${e.key.replaceAll('-', ' ')} × ${e.value}',
                         style: const TextStyle(
-                          fontSize: 13,
+                          fontSize: 12,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -403,7 +403,7 @@ class _ScanScreenState extends State<ScanScreen> {
               ],
             ),
           ],
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Row(
             children: [
               Icon(
@@ -419,20 +419,20 @@ class _ScanScreenState extends State<ScanScreen> {
                             'never the exact house.'
                       : 'Public place: saved at the exact spot.',
                   style: const TextStyle(
-                    fontSize: 12,
+                    fontSize: 11,
                     color: Color(0xFF2E3833),
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
                 child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50),
+                    minimumSize: const Size.fromHeight(44),
                     backgroundColor: const Color(0x99FFFFFF),
                     side: const BorderSide(color: Color(0xE6FFFFFF)),
                   ),
@@ -446,6 +446,7 @@ class _ScanScreenState extends State<ScanScreen> {
                 child: TintButton(
                   label: saving ? 'Saving…' : 'Save to map',
                   icon: Icons.add_location_alt_outlined,
+                  height: 44,
                   onPressed: saving ? null : _save,
                 ),
               ),
@@ -480,7 +481,7 @@ class _PrecisionChip extends StatelessWidget {
             customBorder: const StadiumBorder(),
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
