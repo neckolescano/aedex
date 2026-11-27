@@ -114,7 +114,7 @@ class _ScanScreenState extends State<ScanScreen> {
       _Step.start => GlassBackground(
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 6, 12, 72),
+            padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
             child: _buildStart(),
           ),
         ),
@@ -297,7 +297,7 @@ class _ScanScreenState extends State<ScanScreen> {
             child: SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 70),
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
                 child: working
                     ? const GlassPanel(
                         dark: true,

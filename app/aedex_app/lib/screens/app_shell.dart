@@ -11,6 +11,7 @@ import 'home_screen.dart';
 import 'hotspots_screen.dart';
 import 'map_screen.dart';
 import 'scan_screen.dart';
+import '../widgets/patak.dart';
 
 /// The four tabs and the floating glass tab bar. Owns the shared state:
 /// which tab is open and the map filter. Scans live in [ScanStore].
@@ -68,7 +69,13 @@ class _AppShellState extends State<AppShell> {
         final store = widget.store;
         if (!store.isLoaded) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(
+              child: Patak(
+                size: 112,
+                animate: true,
+                semanticLabel: 'Patak, loading your scans',
+              ),
+            ),
           );
         }
         final all = store.scans;
@@ -141,13 +148,26 @@ class _GlassTabBar extends StatelessWidget {
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       height: 46,
+                      // The open tab is a brighter pane of clear glass: no
+                      // colour, just more white, a bright edge and a soft
+                      // neutral shadow. Ink icon and bold label mark it too.
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(24),
-                        // Butter marks the open tab; ink on butter is the
-                        // brand's readable pair.
                         color: i == index
-                            ? AedexColors.butter
+                            ? const Color(0xE6FFFFFF)
                             : Colors.transparent,
+                        border: Border.all(
+                          color: i == index ? Colors.white : Colors.transparent,
+                        ),
+                        boxShadow: i == index
+                            ? const [
+                                BoxShadow(
+                                  color: Color(0x1A000000),
+                                  blurRadius: 10,
+                                  offset: Offset(0, 2),
+                                ),
+                              ]
+                            : const [],
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

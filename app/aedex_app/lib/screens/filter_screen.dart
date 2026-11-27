@@ -5,6 +5,8 @@ import '../models/scan.dart';
 import '../theme.dart';
 import '../widgets/glass_background.dart';
 import '../widgets/glass_controls.dart';
+import '../widgets/glass_panel.dart';
+import '../widgets/patak.dart';
 
 /// Pick which scans the map shows. Returns the new [ScanFilter] on "Show".
 class FilterScreen extends StatefulWidget {
@@ -90,7 +92,8 @@ class _FilterScreenState extends State<FilterScreen> {
           child: Stack(
             children: [
               ListView(
-                padding: const EdgeInsets.fromLTRB(12, 6, 12, 80),
+                // More room at the end when the "no match" note shows.
+                padding: EdgeInsets.fromLTRB(12, 6, 12, shown == 0 ? 150 : 80),
                 children: [
                   Row(
                     children: [
@@ -232,11 +235,38 @@ class _FilterScreenState extends State<FilterScreen> {
                 left: 12,
                 right: 12,
                 bottom: 10,
-                child: TintButton(
-                  label: 'Show $shown ${shown == 1 ? 'scan' : 'scans'}',
-                  icon: Icons.map_outlined,
-                  height: 48,
-                  onPressed: () => Navigator.pop(context, _f),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (shown == 0)
+                      const GlassPanel(
+                        borderRadius: 20,
+                        margin: EdgeInsets.only(bottom: 8),
+                        padding: EdgeInsets.fromLTRB(10, 8, 14, 8),
+                        child: Row(
+                          children: [
+                            Patak(pose: PatakPose.sleepy, size: 44),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                'No scans match these filters. Try turning '
+                                'some back on.',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: AedexColors.ink,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    TintButton(
+                      label: 'Show $shown ${shown == 1 ? 'scan' : 'scans'}',
+                      icon: Icons.map_outlined,
+                      height: 48,
+                      onPressed: () => Navigator.pop(context, _f),
+                    ),
+                  ],
                 ),
               ),
             ],

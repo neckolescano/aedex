@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image/image.dart' as img;
 import 'package:latlong2/latlong.dart';
+import 'package:aedex_app/widgets/patak.dart';
 
 /// Pretends to be the model: always finds 2 tires and a cup.
 class FakeDetector implements ContainerDetector {
@@ -69,7 +70,11 @@ void main() {
       ),
     );
     expect(find.text('No scans yet'), findsOneWidget);
-    await tester.tap(find.text('Make the first scan'));
+    expect(
+      find.byWidgetPredicate((w) => w is Patak && w.pose == PatakPose.sleepy),
+      findsOneWidget,
+    );
+    await tester.tap(find.text('Scan your first photo'));
     expect(opened, isTrue);
   });
 
