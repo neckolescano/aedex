@@ -224,7 +224,7 @@ class _StatusSteps extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: step.index <= current
                           ? AedexColors.brand
-                          : const Color(0x2E14402F),
+                          : const Color(0x2E1F3FBF),
                       borderRadius: BorderRadius.circular(3),
                     ),
                   ),
@@ -263,7 +263,7 @@ class _GradientBar extends StatelessWidget {
     return SizedBox(
       height: 6,
       child: DecoratedBox(
-        decoration: const BoxDecoration(color: Color(0x1F14402F)),
+        decoration: const BoxDecoration(color: Color(0x1F1F3FBF)),
         child: FractionallySizedBox(
           alignment: Alignment.centerLeft,
           widthFactor: fraction.clamp(0, 1),
@@ -271,7 +271,7 @@ class _GradientBar extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(4)),
               gradient: LinearGradient(
-                colors: [Color(0xFF2A7A57), Color(0xFF14402F)],
+                colors: [Color(0xFF2F5EE0), Color(0xFF1F3FBF)],
               ),
             ),
           ),

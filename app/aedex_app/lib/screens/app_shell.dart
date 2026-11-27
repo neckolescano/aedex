@@ -123,6 +123,7 @@ class _GlassTabBar extends StatelessWidget {
     return SafeArea(
       minimum: const EdgeInsets.fromLTRB(12, 0, 12, 8),
       child: GlassPanel(
+        tinted: false,
         borderRadius: 28,
         padding: const EdgeInsets.all(4),
         child: Row(
@@ -142,8 +143,10 @@ class _GlassTabBar extends StatelessWidget {
                       height: 46,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(24),
+                        // Butter marks the open tab; ink on butter is the
+                        // brand's readable pair.
                         color: i == index
-                            ? AedexColors.brand.withValues(alpha: 0.12)
+                            ? AedexColors.butter
                             : Colors.transparent,
                       ),
                       child: Column(
@@ -153,7 +156,7 @@ class _GlassTabBar extends StatelessWidget {
                             i == index ? _items[i].$2 : _items[i].$1,
                             size: 20,
                             color: i == index
-                                ? AedexColors.brand
+                                ? AedexColors.ink
                                 : AedexColors.muted,
                           ),
                           Text(
@@ -164,7 +167,7 @@ class _GlassTabBar extends StatelessWidget {
                                   ? FontWeight.w800
                                   : FontWeight.w600,
                               color: i == index
-                                  ? AedexColors.brand
+                                  ? AedexColors.ink
                                   : AedexColors.muted,
                             ),
                           ),

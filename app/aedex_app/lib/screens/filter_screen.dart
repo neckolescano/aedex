@@ -125,15 +125,13 @@ class _FilterScreenState extends State<FilterScreen> {
                       ),
                     ],
                   ),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(4, 10, 4, 12),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 10, 4, 12),
                     child: Text(
                       'What do you want to see?',
-                      style: TextStyle(
-                        fontSize: 24,
-                        height: 1.1,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.6,
+                      style: aedexHeading(
+                        context,
+                        const TextStyle(fontSize: 26, height: 1.1),
                       ),
                     ),
                   ),
@@ -264,7 +262,7 @@ class _Label extends StatelessWidget {
           fontSize: 11,
           fontWeight: FontWeight.w800,
           letterSpacing: 0.6,
-          color: Color(0xFF1E3A2D),
+          color: AedexColors.ink,
         ),
       ),
     );
@@ -290,7 +288,7 @@ class _StatusTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fg = selected ? Colors.white : AedexColors.ink;
-    final sub = selected ? const Color(0xD9FFFFFF) : const Color(0xFF3E4943);
+    final sub = selected ? const Color(0xD9FFFFFF) : AedexColors.muted;
     return Semantics(
       checked: selected,
       button: true,
@@ -333,7 +331,7 @@ class _StatusTile extends StatelessWidget {
                           border: Border.all(
                             color: selected
                                 ? Colors.white
-                                : const Color(0x5914402F),
+                                : const Color(0x591F3FBF),
                             width: 1.5,
                           ),
                         ),

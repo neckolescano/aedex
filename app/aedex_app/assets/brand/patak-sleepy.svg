@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Sleepy: closed - - eyes, small mouth, arms down, a small "z z". -->
+  <path fill="none" stroke="#3F7BFF" stroke-width="6" stroke-linecap="round" d="M19 74l-7 6M73 74l7 6"/>
+  <path fill="#3F7BFF" d="M46 6S14 44 14 64a32 32 0 0 0 64 0C78 44 46 6 46 6Z"/>
+  <ellipse cx="29" cy="50" rx="4" ry="9" fill="#fff" opacity=".45" transform="rotate(22 29 50)"/>
+  <path d="M31 65h10M51 65h10" fill="none" stroke="#13204A" stroke-width="3.6" stroke-linecap="round"/>
+  <ellipse cx="26" cy="74" rx="5" ry="3" fill="#FF8FA3" opacity=".85"/><ellipse cx="66" cy="74" rx="5" ry="3" fill="#FF8FA3" opacity=".85"/>
+  <path d="M42 78q4 3 8 0" fill="none" stroke="#13204A" stroke-width="2.6" stroke-linecap="round"/>
+  <path id="prop" d="M68 24h9l-9 10h9M83 10h6l-6 7h6" fill="none" stroke="#13204A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

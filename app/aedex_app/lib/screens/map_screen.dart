@@ -172,7 +172,7 @@ class _MapScreenState extends State<MapScreen> {
                               const Icon(
                                 Icons.place_outlined,
                                 size: 18,
-                                color: Color(0xFF3E4943),
+                                color: AedexColors.muted,
                               ),
                               const SizedBox(width: 8),
                               Expanded(
@@ -312,7 +312,7 @@ class _Summary extends StatelessWidget {
             child: Text(
               label,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 11, color: Color(0xFF3E4943)),
+              style: const TextStyle(fontSize: 11, color: AedexColors.muted),
             ),
           ),
         ],
@@ -333,7 +333,7 @@ class _Summary extends StatelessWidget {
     );
 
     Widget divider() =>
-        Container(width: 1, height: 18, color: const Color(0x2914402F));
+        Container(width: 1, height: 18, color: const Color(0x291F3FBF));
 
     final containers = scans.fold(0, (n, s) => n + s.totalContainers);
     final high = scans.where((s) => s.risk == RiskLevel.high).length;
@@ -365,7 +365,7 @@ class _Summary extends StatelessWidget {
             Text(
               hint,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12, color: Color(0xFF3E4943)),
+              style: const TextStyle(fontSize: 12, color: AedexColors.muted),
             )
           else
             Wrap(
@@ -378,7 +378,7 @@ class _Summary extends StatelessWidget {
                 dot(AedexColors.high, '4+'),
                 const Text(
                   'Tap a pin for details',
-                  style: TextStyle(fontSize: 11, color: Color(0xFF3E4943)),
+                  style: TextStyle(fontSize: 11, color: AedexColors.muted),
                 ),
               ],
             ),

@@ -141,20 +141,16 @@ class _ScanScreenState extends State<ScanScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
+        Text(
           'Scan a spot',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.5,
-          ),
+          style: aedexHeading(context, const TextStyle(fontSize: 26)),
         ),
         const SizedBox(height: 6),
         const Text(
           'Take a clear photo of the area. The app finds containers that can '
           'hold rainwater and puts the result on the map. The photo itself is '
           'not saved.',
-          style: TextStyle(fontSize: 13, color: Color(0xFF2E3833), height: 1.4),
+          style: TextStyle(fontSize: 13, color: AedexColors.muted, height: 1.4),
         ),
         const Spacer(),
         GlassPanel(
@@ -241,7 +237,7 @@ class _ScanScreenState extends State<ScanScreen> {
     final saving = _step == _Step.saving;
 
     return ColoredBox(
-      color: const Color(0xFF0B120E),
+      color: AedexDark.ground,
       child: Stack(
         children: [
           Positioned.fill(
@@ -371,11 +367,7 @@ class _ScanScreenState extends State<ScanScreen> {
             total == 0
                 ? 'No containers found'
                 : '$total possible breeding ${total == 1 ? 'site' : 'sites'}',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.3,
-            ),
+            style: aedexHeading(context, const TextStyle(fontSize: 20)),
           ),
           if (counts.isNotEmpty) ...[
             const SizedBox(height: 8),
@@ -420,7 +412,7 @@ class _ScanScreenState extends State<ScanScreen> {
                       : 'Public place: saved at the exact spot.',
                   style: const TextStyle(
                     fontSize: 11,
-                    color: Color(0xFF2E3833),
+                    color: AedexColors.muted,
                   ),
                 ),
               ),
@@ -536,7 +528,7 @@ class BoxPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.5
       ..color = const Color(0xFFFFD66B);
-    final labelFill = Paint()..color = const Color(0xB30B120E);
+    final labelFill = Paint()..color = const Color(0xB30B1330);
     final labelEdge = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1

@@ -117,14 +117,15 @@ class _HotspotsScreenState extends State<HotspotsScreen> {
                               color: AedexDark.muted,
                             ),
                           ),
-                          const Text(
+                          Text(
                             'Hotspots',
-                            style: TextStyle(
-                              fontSize: 20,
-                              height: 1.15,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.4,
-                              color: AedexDark.text,
+                            style: aedexHeading(
+                              context,
+                              const TextStyle(
+                                fontSize: 22,
+                                height: 1.15,
+                                color: AedexDark.text,
+                              ),
                             ),
                           ),
                         ],
@@ -149,7 +150,8 @@ class _HotspotsScreenState extends State<HotspotsScreen> {
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
                             value: _heat,
-                            activeTrackColor: AedexColors.clear,
+                            activeTrackColor: AedexColors.butter,
+                            activeThumbColor: AedexColors.ink,
                             onChanged: (v) => setState(() => _heat = v),
                           ),
                         ],
@@ -254,7 +256,7 @@ class _ZoneBadge extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [Color(0x47FFFFFF), Color(0x1AFFFFFF)],
         ),
-        color: const Color(0xD10E1713),
+        color: AedexDark.glass,
         border: Border.all(
           color: selected ? Colors.white : const Color(0x5CFFFFFF),
           width: selected ? 2.5 : 1.5,
@@ -375,11 +377,13 @@ class _ZoneCard extends StatelessWidget {
                 children: [
                   Text(
                     '${zone.waiting}',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      height: 1,
-                      fontWeight: FontWeight.w800,
-                      color: AedexDark.text,
+                    style: aedexHeading(
+                      context,
+                      const TextStyle(
+                        fontSize: 26,
+                        height: 1,
+                        color: AedexDark.text,
+                      ),
                     ),
                   ),
                   const Text(
@@ -423,7 +427,7 @@ class _ZoneCard extends StatelessWidget {
             '${top.isEmpty ? '' : ' · mostly $top'}',
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 11, color: Color(0xFFD3DED8)),
+            style: const TextStyle(fontSize: 11, color: AedexDark.muted),
           ),
         ],
       ),
