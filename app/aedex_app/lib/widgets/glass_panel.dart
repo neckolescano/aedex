@@ -57,10 +57,8 @@ class GlassPanel extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: radius,
-          child: BackdropFilter(
-            // Blur only what is behind this panel.
-            filter: ui.ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-            child: DecoratedBox(
+          child: _maybeBlur(
+            DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: radius,
                 // Fairly solid white keeps text readable over a busy map.
@@ -113,4 +111,13 @@ class GlassPanel extends StatelessWidget {
       ),
     );
   }
+
+  // Blur only what is behind this panel. blur: 0 skips the filter (no
+  // blur work at all), for panels over a plain background.
+  Widget _maybeBlur(Widget child) => blur > 0
+      ? BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+          child: child,
+        )
+      : child;
 }
