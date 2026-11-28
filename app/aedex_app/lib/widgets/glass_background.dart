@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-/// Soft green, yellow and red glows for screens without a map, so the
+import '../theme.dart';
+
+/// Soft Patak blue and butter glows for screens without a map, so the
 /// glass panels have colour behind them to blur.
 class GlassBackground extends StatelessWidget {
   const GlassBackground({super.key, required this.child});
@@ -22,12 +24,12 @@ class GlassBackground extends StatelessWidget {
     );
 
     return DecoratedBox(
-      decoration: const BoxDecoration(color: Color(0xFFE6ECE3)),
+      decoration: const BoxDecoration(color: AedexColors.skyWash),
       child: Stack(
         children: [
-          glow(const Alignment(-1.3, -1.1), const Color(0xB32F8F5B), 380),
-          glow(const Alignment(1.4, -0.1), const Color(0x8CC8382B), 340),
-          glow(const Alignment(-1.2, 1.1), const Color(0xA6F2C14E), 360),
+          glow(const Alignment(-1.3, -1.1), const Color(0x993F7BFF), 380),
+          glow(const Alignment(1.4, -0.1), const Color(0x731F3FBF), 340),
+          glow(const Alignment(-1.2, 1.1), const Color(0xB3FFD84D), 360),
           Positioned.fill(child: child),
         ],
       ),

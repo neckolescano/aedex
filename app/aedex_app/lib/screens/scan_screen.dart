@@ -13,6 +13,7 @@ import '../theme.dart';
 import '../widgets/glass_background.dart';
 import '../widgets/glass_controls.dart';
 import '../widgets/glass_panel.dart';
+import '../widgets/patak.dart';
 
 /// Take or pick a photo, let the model find containers, save it as a scan.
 class ScanScreen extends StatefulWidget {
@@ -114,7 +115,7 @@ class _ScanScreenState extends State<ScanScreen> {
       _Step.start => GlassBackground(
         child: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 6, 12, 72),
+            padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
             child: _buildStart(),
           ),
         ),
@@ -141,20 +142,16 @@ class _ScanScreenState extends State<ScanScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Text(
+        Text(
           'Scan a spot',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
-            letterSpacing: -0.5,
-          ),
+          style: aedexHeading(context, const TextStyle(fontSize: 26)),
         ),
         const SizedBox(height: 6),
         const Text(
           'Take a clear photo of the area. The app finds containers that can '
           'hold rainwater and puts the result on the map. The photo itself is '
           'not saved.',
-          style: TextStyle(fontSize: 13, color: Color(0xFF2E3833), height: 1.4),
+          style: TextStyle(fontSize: 13, color: AedexColors.muted, height: 1.4),
         ),
         const Spacer(),
         GlassPanel(
@@ -241,7 +238,7 @@ class _ScanScreenState extends State<ScanScreen> {
     final saving = _step == _Step.saving;
 
     return ColoredBox(
-      color: const Color(0xFF0B120E),
+      color: AedexDark.ground,
       child: Stack(
         children: [
           Positioned.fill(
@@ -301,22 +298,23 @@ class _ScanScreenState extends State<ScanScreen> {
             child: SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 70),
+                padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
                 child: working
                     ? const GlassPanel(
                         dark: true,
                         borderRadius: 26,
+                        padding: EdgeInsets.fromLTRB(10, 8, 16, 8),
                         child: Row(
                           children: [
-                            SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.5,
-                                color: Colors.white,
-                              ),
+                            // Patak sweeps the magnifier while the model
+                            // runs; butter props so it reads on dark glass.
+                            Patak(
+                              size: 56,
+                              animate: true,
+                              onDark: true,
+                              semanticLabel: 'Patak, looking for containers',
                             ),
-                            SizedBox(width: 14),
+                            SizedBox(width: 10),
                             Text(
                               'Looking for containers…',
                               style: TextStyle(
@@ -347,7 +345,7 @@ class _ScanScreenState extends State<ScanScreen> {
     final (tag, tagColor) = switch (risk) {
       RiskLevel.high => ('HIGH RISK', const Color(0xFF9E2A1E)),
       RiskLevel.some => ('SOME RISK', const Color(0xFF7A5A00)),
-      RiskLevel.clear => ('ALL CLEAR', AedexColors.brand),
+      RiskLevel.clear => ('NO CONTAINERS FOUND', AedexColors.brand),
     };
 
     return GlassPanel(
@@ -357,25 +355,46 @@ class _ScanScreenState extends State<ScanScreen> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            tag,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.5,
-              color: tagColor,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            total == 0
-                ? 'No containers found'
-                : '$total possible breeding ${total == 1 ? 'site' : 'sites'}',
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.3,
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tag,
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.5,
+                        color: tagColor,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      total == 0
+                          ? 'All clear!'
+                          : '$total possible breeding '
+                                '${total == 1 ? 'site' : 'sites'}',
+                      style: aedexHeading(
+                        context,
+                        const TextStyle(fontSize: 20),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              // Worried when something was found, happy when it is clear.
+              Patak(
+                pose: total == 0 ? PatakPose.happy : PatakPose.worried,
+                size: 60,
+                animate: true,
+                semanticLabel: total == 0
+                    ? 'Patak, happy: all clear'
+                    : 'Patak, looking worried: $total found',
+              ),
+            ],
           ),
           if (counts.isNotEmpty) ...[
             const SizedBox(height: 8),
@@ -420,7 +439,7 @@ class _ScanScreenState extends State<ScanScreen> {
                       : 'Public place: saved at the exact spot.',
                   style: const TextStyle(
                     fontSize: 11,
-                    color: Color(0xFF2E3833),
+                    color: AedexColors.muted,
                   ),
                 ),
               ),
@@ -536,7 +555,7 @@ class BoxPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.5
       ..color = const Color(0xFFFFD66B);
-    final labelFill = Paint()..color = const Color(0xB30B120E);
+    final labelFill = Paint()..color = const Color(0xB30B1330);
     final labelEdge = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1

@@ -8,6 +8,7 @@ import '../widgets/glass_controls.dart';
 import '../widgets/glass_panel.dart';
 import '../widgets/scan_card.dart';
 import '../widgets/scan_pin.dart';
+import '../widgets/patak.dart';
 
 /// Short class names for tight spaces: "Coconut-Exocarp" -> "Coconut".
 String shortClassName(String name) => name.split('-').first;
@@ -33,36 +34,43 @@ class HomeScreen extends StatelessWidget {
     return GlassBackground(
       child: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(12, 6, 12, 80),
+          padding: const EdgeInsets.fromLTRB(12, 6, 12, 12),
           children: [
             _Header(scans: scans),
             const SizedBox(height: 10),
-            if (scans.isEmpty) _empty() else ..._summary(),
+            if (scans.isEmpty) _empty(context) else ..._summary(),
           ],
         ),
       ),
     );
   }
 
-  Widget _empty() => GlassPanel(
+  Widget _empty(BuildContext context) => GlassPanel(
     borderRadius: 24,
-    padding: const EdgeInsets.all(16),
+    padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'No scans yet',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800),
+        const Patak(
+          pose: PatakPose.sleepy,
+          size: 104,
+          animate: true,
+          semanticLabel: 'Patak, asleep: no scans yet',
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
+        Text(
+          'No scans yet',
+          style: aedexHeading(context, const TextStyle(fontSize: 22)),
+        ),
+        const SizedBox(height: 6),
         const Text(
           'Scan a yard, a canal or a vacant lot. Every scan becomes a pin on '
           'the map, and places with many containers become hotspots.',
-          style: TextStyle(height: 1.45, color: Color(0xFF2E3833)),
+          textAlign: TextAlign.center,
+          style: TextStyle(height: 1.45, color: AedexColors.muted),
         ),
         const SizedBox(height: 16),
         TintButton(
-          label: 'Make the first scan',
+          label: 'Scan your first photo',
           icon: Icons.photo_camera_outlined,
           onPressed: onOpenScan,
         ),
@@ -124,21 +132,19 @@ class _Header extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const PatakLogo(height: 30),
+          const SizedBox(height: 8),
           const Text(
             'Barangay overview',
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1E3A2D),
+              color: AedexColors.ink,
             ),
           ),
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.5,
-            ),
+            style: aedexHeading(context, const TextStyle(fontSize: 26)),
           ),
         ],
       ),
@@ -180,7 +186,7 @@ class _ProgressCard extends StatelessWidget {
                     strokeWidth: 8,
                     strokeCap: StrokeCap.round,
                     color: AedexColors.clear,
-                    backgroundColor: const Color(0x1F14402F),
+                    backgroundColor: const Color(0x1F1F3FBF),
                   ),
                   Center(
                     child: Container(
@@ -190,7 +196,7 @@ class _ProgressCard extends StatelessWidget {
                         shape: BoxShape.circle,
                         color: Color(0xCCFFFFFF),
                         boxShadow: [
-                          BoxShadow(color: Color(0x1F102219), blurRadius: 8),
+                          BoxShadow(color: Color(0x1F13204A), blurRadius: 8),
                         ],
                       ),
                       alignment: Alignment.center,
@@ -240,7 +246,7 @@ class _ProgressCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 12,
                     height: 1.35,
-                    color: Color(0xFF2E3833),
+                    color: AedexColors.muted,
                   ),
                 ),
               ],
@@ -300,7 +306,7 @@ class _CleanFirstCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             zone.name,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+            style: aedexHeading(context, const TextStyle(fontSize: 20)),
           ),
           const SizedBox(height: 6),
           Row(
@@ -308,17 +314,19 @@ class _CleanFirstCard extends StatelessWidget {
             children: [
               Text(
                 '${zone.waiting}',
-                style: const TextStyle(
-                  fontSize: 34,
-                  height: 0.95,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFFB3301F),
+                style: aedexHeading(
+                  context,
+                  const TextStyle(
+                    fontSize: 36,
+                    height: 0.95,
+                    color: Color(0xFFB3301F),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
               const Text(
                 'containers waiting\nto be cleaned',
-                style: TextStyle(fontSize: 12, color: Color(0xFF2E3833)),
+                style: TextStyle(fontSize: 12, color: AedexColors.muted),
               ),
             ],
           ),
@@ -418,7 +426,7 @@ class _LatestScans extends StatelessWidget {
                             '${formatScanTime(s.time)} · ${_capitalize(s.status.name)}',
                             style: const TextStyle(
                               fontSize: 11,
-                              color: Color(0xFF3E4943),
+                              color: AedexColors.muted,
                             ),
                           ),
                         ],

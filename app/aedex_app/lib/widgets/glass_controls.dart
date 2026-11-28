@@ -9,11 +9,11 @@ BoxDecoration tintDecoration({double radius = 25}) => BoxDecoration(
   gradient: const LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xEB267052), Color(0xF014402F)],
+    colors: [Color(0xEB2F5EE0), Color(0xF01F3FBF)],
   ),
   border: Border.all(color: const Color(0x61FFFFFF)),
   boxShadow: const [
-    BoxShadow(color: Color(0x5914402F), blurRadius: 22, offset: Offset(0, 8)),
+    BoxShadow(color: Color(0x591F3FBF), blurRadius: 22, offset: Offset(0, 8)),
   ],
 );
 
@@ -27,7 +27,7 @@ BoxDecoration frostDecoration({double radius = 19, bool dark = false}) =>
       ),
       boxShadow: const [
         BoxShadow(
-          color: Color(0x14102219),
+          color: Color(0x1413204A),
           blurRadius: 8,
           offset: Offset(0, 2),
         ),

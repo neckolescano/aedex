@@ -16,10 +16,15 @@ class GlassPanel extends StatelessWidget {
     this.margin = EdgeInsets.zero,
     this.blur = 20,
     this.dark = false,
+    this.tinted = true,
   });
 
   /// Smoky glass for dark screens (Hotspots) instead of frosted white.
   final bool dark;
+
+  /// A faint skyWash tint and a navy shadow. Off gives plain white glass
+  /// with a grey shadow (the tab bar), so the butter tab stands alone.
+  final bool tinted;
 
   final Widget child;
   final double borderRadius;
@@ -40,7 +45,11 @@ class GlassPanel extends StatelessWidget {
           borderRadius: radius,
           boxShadow: [
             BoxShadow(
-              color: dark ? const Color(0x66000000) : const Color(0x29102219),
+              color: dark
+                  ? const Color(0x66000000)
+                  : tinted
+                  ? const Color(0x2913204A)
+                  : const Color(0x24000000),
               blurRadius: 30,
               offset: const Offset(0, 10),
             ),
@@ -48,10 +57,8 @@ class GlassPanel extends StatelessWidget {
         ),
         child: ClipRRect(
           borderRadius: radius,
-          child: BackdropFilter(
-            // Blur only what is behind this panel.
-            filter: ui.ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-            child: DecoratedBox(
+          child: _maybeBlur(
+            DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: radius,
                 // Fairly solid white keeps text readable over a busy map.
@@ -60,6 +67,8 @@ class GlassPanel extends StatelessWidget {
                   end: Alignment.bottomRight,
                   colors: dark
                       ? const [Color(0x29FFFFFF), Color(0x0DFFFFFF)]
+                      : tinted
+                      ? const [Color(0xC7FFFFFF), Color(0x8CEAF2FF)]
                       : const [Color(0xC7FFFFFF), Color(0x85FFFFFF)],
                 ),
                 border: Border.all(
@@ -102,4 +111,13 @@ class GlassPanel extends StatelessWidget {
       ),
     );
   }
+
+  // Blur only what is behind this panel. blur: 0 skips the filter (no
+  // blur work at all), for panels over a plain background.
+  Widget _maybeBlur(Widget child) => blur > 0
+      ? BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+          child: child,
+        )
+      : child;
 }

@@ -9,6 +9,7 @@ import '../theme.dart';
 import '../widgets/base_map.dart';
 import '../widgets/glass_panel.dart';
 import 'home_screen.dart' show shortClassName;
+import '../widgets/patak.dart';
 
 /// Status colours that read well on dark glass.
 const statusColorsDark = {
@@ -117,14 +118,15 @@ class _HotspotsScreenState extends State<HotspotsScreen> {
                               color: AedexDark.muted,
                             ),
                           ),
-                          const Text(
+                          Text(
                             'Hotspots',
-                            style: TextStyle(
-                              fontSize: 20,
-                              height: 1.15,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.4,
-                              color: AedexDark.text,
+                            style: aedexHeading(
+                              context,
+                              const TextStyle(
+                                fontSize: 22,
+                                height: 1.15,
+                                color: AedexDark.text,
+                              ),
                             ),
                           ),
                         ],
@@ -149,7 +151,8 @@ class _HotspotsScreenState extends State<HotspotsScreen> {
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
                             value: _heat,
-                            activeTrackColor: AedexColors.clear,
+                            activeTrackColor: AedexColors.butter,
+                            activeThumbColor: AedexColors.ink,
                             onChanged: (v) => setState(() => _heat = v),
                           ),
                         ],
@@ -164,62 +167,89 @@ class _HotspotsScreenState extends State<HotspotsScreen> {
             alignment: Alignment.bottomCenter,
             child: SafeArea(
               top: false,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 62),
-                child: zones.isEmpty
-                    ? const GlassPanel(
-                        dark: true,
-                        margin: EdgeInsets.fromLTRB(12, 0, 12, 12),
-                        child: Text(
-                          'No hotspots yet. They appear when scans are saved '
-                          'close together.',
-                          style: TextStyle(color: AedexDark.muted),
-                        ),
-                      )
-                    : Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+              // SafeArea already leaves room for the tab bar.
+              child: zones.isEmpty
+                  ? GlassPanel(
+                      dark: true,
+                      margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                      child: Row(
                         children: [
-                          const GlassPanel(
-                            dark: true,
-                            borderRadius: 18,
-                            margin: EdgeInsets.fromLTRB(12, 0, 12, 8),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 14,
-                              vertical: 7,
-                            ),
-                            child: Row(
+                          const Patak(
+                            pose: PatakPose.sleepy,
+                            size: 64,
+                            onDark: true,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Clean these first',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w800,
-                                    color: AedexDark.text,
+                                  'No hotspots yet',
+                                  style: aedexHeading(
+                                    context,
+                                    const TextStyle(
+                                      fontSize: 18,
+                                      color: AedexColors.butter,
+                                    ),
                                   ),
                                 ),
-                                Spacer(),
-                                Text(
-                                  'Areas, never single homes',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: AedexDark.muted,
-                                  ),
+                                const SizedBox(height: 2),
+                                const Text(
+                                  'They appear when scans are saved close '
+                                  'together.',
+                                  style: TextStyle(color: AedexDark.muted),
                                 ),
                               ],
                             ),
                           ),
-                          _ZoneCards(
-                            zones: zones,
-                            selected: _selected,
-                            onSelect: (i) {
-                              setState(() => _selected = i);
-                              _controller.move(zones[i].center, 17);
-                            },
-                          ),
                         ],
                       ),
-              ),
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const GlassPanel(
+                          dark: true,
+                          borderRadius: 18,
+                          margin: EdgeInsets.fromLTRB(12, 0, 12, 8),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 7,
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Clean these first',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w800,
+                                  color: AedexDark.text,
+                                ),
+                              ),
+                              Spacer(),
+                              Text(
+                                'Areas, never single homes',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: AedexDark.muted,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        _ZoneCards(
+                          zones: zones,
+                          selected: _selected,
+                          onSelect: (i) {
+                            setState(() => _selected = i);
+                            _controller.move(zones[i].center, 17);
+                          },
+                        ),
+                      ],
+                    ),
             ),
           ),
         ],
@@ -254,7 +284,7 @@ class _ZoneBadge extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [Color(0x47FFFFFF), Color(0x1AFFFFFF)],
         ),
-        color: const Color(0xD10E1713),
+        color: AedexDark.glass,
         border: Border.all(
           color: selected ? Colors.white : const Color(0x5CFFFFFF),
           width: selected ? 2.5 : 1.5,
@@ -370,24 +400,44 @@ class _ZoneCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '${zone.waiting}',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      height: 1,
-                      fontWeight: FontWeight.w800,
-                      color: AedexDark.text,
+              // A fully cleaned zone gets a small happy Patak badge.
+              if (zone.waiting == 0)
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Patak(
+                      pose: PatakPose.happy,
+                      size: 34,
+                      onDark: true,
+                      semanticLabel: 'Patak, happy: zone cleaned',
                     ),
-                  ),
-                  const Text(
-                    'to clean',
-                    style: TextStyle(fontSize: 10, color: AedexDark.muted),
-                  ),
-                ],
-              ),
+                    Text(
+                      'cleaned',
+                      style: TextStyle(fontSize: 10, color: AedexDark.muted),
+                    ),
+                  ],
+                )
+              else
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${zone.waiting}',
+                      style: aedexHeading(
+                        context,
+                        const TextStyle(
+                          fontSize: 26,
+                          height: 1,
+                          color: AedexDark.text,
+                        ),
+                      ),
+                    ),
+                    const Text(
+                      'to clean',
+                      style: TextStyle(fontSize: 10, color: AedexDark.muted),
+                    ),
+                  ],
+                ),
             ],
           ),
           const SizedBox(height: 8),
@@ -423,7 +473,7 @@ class _ZoneCard extends StatelessWidget {
             '${top.isEmpty ? '' : ' · mostly $top'}',
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 11, color: Color(0xFFD3DED8)),
+            style: const TextStyle(fontSize: 11, color: AedexDark.muted),
           ),
         ],
       ),

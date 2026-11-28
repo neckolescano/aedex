@@ -11,6 +11,7 @@ import 'home_screen.dart';
 import 'hotspots_screen.dart';
 import 'map_screen.dart';
 import 'scan_screen.dart';
+import '../widgets/patak.dart';
 
 /// The four tabs and the floating glass tab bar. Owns the shared state:
 /// which tab is open and the map filter. Scans live in [ScanStore].
@@ -68,7 +69,13 @@ class _AppShellState extends State<AppShell> {
         final store = widget.store;
         if (!store.isLoaded) {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(
+              child: Patak(
+                size: 112,
+                animate: true,
+                semanticLabel: 'Patak, loading your scans',
+              ),
+            ),
           );
         }
         final all = store.scans;
@@ -123,6 +130,7 @@ class _GlassTabBar extends StatelessWidget {
     return SafeArea(
       minimum: const EdgeInsets.fromLTRB(12, 0, 12, 8),
       child: GlassPanel(
+        tinted: false,
         borderRadius: 28,
         padding: const EdgeInsets.all(4),
         child: Row(
@@ -140,11 +148,26 @@ class _GlassTabBar extends StatelessWidget {
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       height: 46,
+                      // The open tab is a brighter pane of clear glass: no
+                      // colour, just more white, a bright edge and a soft
+                      // neutral shadow. Ink icon and bold label mark it too.
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(24),
                         color: i == index
-                            ? AedexColors.brand.withValues(alpha: 0.12)
+                            ? const Color(0xE6FFFFFF)
                             : Colors.transparent,
+                        border: Border.all(
+                          color: i == index ? Colors.white : Colors.transparent,
+                        ),
+                        boxShadow: i == index
+                            ? const [
+                                BoxShadow(
+                                  color: Color(0x1A000000),
+                                  blurRadius: 10,
+                                  offset: Offset(0, 2),
+                                ),
+                              ]
+                            : const [],
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -153,7 +176,7 @@ class _GlassTabBar extends StatelessWidget {
                             i == index ? _items[i].$2 : _items[i].$1,
                             size: 20,
                             color: i == index
-                                ? AedexColors.brand
+                                ? AedexColors.ink
                                 : AedexColors.muted,
                           ),
                           Text(
@@ -164,7 +187,7 @@ class _GlassTabBar extends StatelessWidget {
                                   ? FontWeight.w800
                                   : FontWeight.w600,
                               color: i == index
-                                  ? AedexColors.brand
+                                  ? AedexColors.ink
                                   : AedexColors.muted,
                             ),
                           ),

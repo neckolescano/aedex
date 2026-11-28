@@ -11,6 +11,7 @@ import '../widgets/glass_controls.dart';
 import '../widgets/glass_panel.dart';
 import '../widgets/scan_card.dart';
 import '../widgets/scan_pin.dart';
+import '../widgets/patak.dart';
 
 /// One pin per saved scan, coloured by risk; tap a pin for its card.
 class MapScreen extends StatefulWidget {
@@ -172,7 +173,7 @@ class _MapScreenState extends State<MapScreen> {
                               const Icon(
                                 Icons.place_outlined,
                                 size: 18,
-                                color: Color(0xFF3E4943),
+                                color: AedexColors.muted,
                               ),
                               const SizedBox(width: 8),
                               Expanded(
@@ -241,35 +242,33 @@ class _MapScreenState extends State<MapScreen> {
           alignment: Alignment.bottomCenter,
           child: SafeArea(
             top: false,
-            child: Padding(
-              // Room for the floating tab bar.
-              padding: const EdgeInsets.only(bottom: 62),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  // The locate button rides just above the card, out of
-                  // the way of the bars at the top.
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 12, 8),
-                    child: GlassIconButton(
-                      icon: Icons.my_location,
-                      tooltip: 'Show my location',
-                      size: 40,
-                      onPressed: _goToMe,
-                    ),
+            // The Scaffold already reports the tab bar as bottom padding
+            // (extendBody), so SafeArea alone keeps the card above it.
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // The locate button rides just above the card, out of
+                // the way of the bars at the top.
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 12, 8),
+                  child: GlassIconButton(
+                    icon: Icons.my_location,
+                    tooltip: 'Show my location',
+                    size: 40,
+                    onPressed: _goToMe,
                   ),
-                  if (selected != null)
-                    ScanCard(
-                      scan: selected,
-                      onClose: () => setState(() => _selectedId = null),
-                      onAdvance: () => widget.onAdvance(selected!.id),
-                      bottomMargin: 8,
-                    )
-                  else
-                    _Summary(scans: scans, totalScans: widget.allScans.length),
-                ],
-              ),
+                ),
+                if (selected != null)
+                  ScanCard(
+                    scan: selected,
+                    onClose: () => setState(() => _selectedId = null),
+                    onAdvance: () => widget.onAdvance(selected!.id),
+                    bottomMargin: 8,
+                  )
+                else
+                  _Summary(scans: scans, totalScans: widget.allScans.length),
+              ],
             ),
           ),
         ),
@@ -312,7 +311,7 @@ class _Summary extends StatelessWidget {
             child: Text(
               label,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 11, color: Color(0xFF3E4943)),
+              style: const TextStyle(fontSize: 11, color: AedexColors.muted),
             ),
           ),
         ],
@@ -333,7 +332,7 @@ class _Summary extends StatelessWidget {
     );
 
     Widget divider() =>
-        Container(width: 1, height: 18, color: const Color(0x2914402F));
+        Container(width: 1, height: 18, color: const Color(0x291F3FBF));
 
     final containers = scans.fold(0, (n, s) => n + s.totalContainers);
     final high = scans.where((s) => s.risk == RiskLevel.high).length;
@@ -362,10 +361,21 @@ class _Summary extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           if (hint != null)
-            Text(
-              hint,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 12, color: Color(0xFF3E4943)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Patak(pose: PatakPose.sleepy, size: 36),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    hint,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AedexColors.muted,
+                    ),
+                  ),
+                ),
+              ],
             )
           else
             Wrap(
@@ -378,7 +388,7 @@ class _Summary extends StatelessWidget {
                 dot(AedexColors.high, '4+'),
                 const Text(
                   'Tap a pin for details',
-                  style: TextStyle(fontSize: 11, color: Color(0xFF3E4943)),
+                  style: TextStyle(fontSize: 11, color: AedexColors.muted),
                 ),
               ],
             ),

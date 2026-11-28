@@ -5,6 +5,8 @@ import '../models/scan.dart';
 import '../theme.dart';
 import '../widgets/glass_background.dart';
 import '../widgets/glass_controls.dart';
+import '../widgets/glass_panel.dart';
+import '../widgets/patak.dart';
 
 /// Pick which scans the map shows. Returns the new [ScanFilter] on "Show".
 class FilterScreen extends StatefulWidget {
@@ -90,7 +92,8 @@ class _FilterScreenState extends State<FilterScreen> {
           child: Stack(
             children: [
               ListView(
-                padding: const EdgeInsets.fromLTRB(12, 6, 12, 80),
+                // More room at the end when the "no match" note shows.
+                padding: EdgeInsets.fromLTRB(12, 6, 12, shown == 0 ? 150 : 80),
                 children: [
                   Row(
                     children: [
@@ -125,15 +128,13 @@ class _FilterScreenState extends State<FilterScreen> {
                       ),
                     ],
                   ),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(4, 10, 4, 12),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 10, 4, 12),
                     child: Text(
                       'What do you want to see?',
-                      style: TextStyle(
-                        fontSize: 24,
-                        height: 1.1,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.6,
+                      style: aedexHeading(
+                        context,
+                        const TextStyle(fontSize: 26, height: 1.1),
                       ),
                     ),
                   ),
@@ -234,11 +235,38 @@ class _FilterScreenState extends State<FilterScreen> {
                 left: 12,
                 right: 12,
                 bottom: 10,
-                child: TintButton(
-                  label: 'Show $shown ${shown == 1 ? 'scan' : 'scans'}',
-                  icon: Icons.map_outlined,
-                  height: 48,
-                  onPressed: () => Navigator.pop(context, _f),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (shown == 0)
+                      const GlassPanel(
+                        borderRadius: 20,
+                        margin: EdgeInsets.only(bottom: 8),
+                        padding: EdgeInsets.fromLTRB(10, 8, 14, 8),
+                        child: Row(
+                          children: [
+                            Patak(pose: PatakPose.sleepy, size: 44),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                'No scans match these filters. Try turning '
+                                'some back on.',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: AedexColors.ink,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    TintButton(
+                      label: 'Show $shown ${shown == 1 ? 'scan' : 'scans'}',
+                      icon: Icons.map_outlined,
+                      height: 48,
+                      onPressed: () => Navigator.pop(context, _f),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -264,7 +292,7 @@ class _Label extends StatelessWidget {
           fontSize: 11,
           fontWeight: FontWeight.w800,
           letterSpacing: 0.6,
-          color: Color(0xFF1E3A2D),
+          color: AedexColors.ink,
         ),
       ),
     );
@@ -290,7 +318,7 @@ class _StatusTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fg = selected ? Colors.white : AedexColors.ink;
-    final sub = selected ? const Color(0xD9FFFFFF) : const Color(0xFF3E4943);
+    final sub = selected ? const Color(0xD9FFFFFF) : AedexColors.muted;
     return Semantics(
       checked: selected,
       button: true,
@@ -333,7 +361,7 @@ class _StatusTile extends StatelessWidget {
                           border: Border.all(
                             color: selected
                                 ? Colors.white
-                                : const Color(0x5914402F),
+                                : const Color(0x591F3FBF),
                             width: 1.5,
                           ),
                         ),
