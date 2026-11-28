@@ -17,14 +17,14 @@ WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
 cp "$APP/assets/brand/patak-submark.svg" "$WORK/submark.svg"
-# A 512 px cobalt rounded square with the submark in the middle, in the
+# A 512 px deep green rounded square with the submark in the middle, in the
 # top-left corner of a bigger window (Chrome lays out tiny windows wider
 # than asked, so the window is roomy and the icon is cropped out after).
 cat > "$WORK/icon.html" <<'HTML'
 <!doctype html><style>
 html,body{margin:0;background:transparent;overflow:hidden}
 .icon{position:absolute;left:0;top:0;width:512px;height:512px}
-.tile{position:absolute;inset:20px;border-radius:108px;background:#1F3FBF;
+.tile{position:absolute;inset:20px;border-radius:108px;background:#14402F;
   display:flex;align-items:center;justify-content:center}
 .tile img{width:70%;height:70%}
 </style><div class="icon"><div class="tile"><img src="submark.svg"></div></div>

@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- Worried: wide eyes, raised brows, small "o" mouth, a sweat drop, arms down. -->
-  <path fill="none" stroke="#3F7BFF" stroke-width="6" stroke-linecap="round" d="M19 74l-7 6M73 74l7 6"/>
-  <path fill="#3F7BFF" d="M46 6S14 44 14 64a32 32 0 0 0 64 0C78 44 46 6 46 6Z"/>
+  <path fill="none" stroke="#2FB58A" stroke-width="6" stroke-linecap="round" d="M19 74l-7 6M73 74l7 6"/>
+  <path fill="#2FB58A" d="M46 6S14 44 14 64a32 32 0 0 0 64 0C78 44 46 6 46 6Z"/>
   <ellipse cx="29" cy="50" rx="4" ry="9" fill="#fff" opacity=".45" transform="rotate(22 29 50)"/>
-  <path d="M29 51l11-4M52 47l11 4" fill="none" stroke="#13204A" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M29 51l11-4M52 47l11 4" fill="none" stroke="#17211C" stroke-width="2.6" stroke-linecap="round"/>
   <ellipse cx="36" cy="62" rx="8" ry="9.5" fill="#fff"/><ellipse cx="56" cy="62" rx="8" ry="9.5" fill="#fff"/>
-  <circle cx="36" cy="63" r="3.4" fill="#13204A"/><circle cx="56" cy="63" r="3.4" fill="#13204A"/>
+  <circle cx="36" cy="63" r="3.4" fill="#17211C"/><circle cx="56" cy="63" r="3.4" fill="#17211C"/>
   <circle cx="37.2" cy="61.8" r="1.1" fill="#fff"/><circle cx="57.2" cy="61.8" r="1.1" fill="#fff"/>
   <ellipse cx="26" cy="76" rx="5" ry="3" fill="#FF8FA3" opacity=".85"/><ellipse cx="66" cy="76" rx="5" ry="3" fill="#FF8FA3" opacity=".85"/>
-  <ellipse cx="46" cy="80" rx="3.6" ry="4.4" fill="#13204A"/>
-  <path d="M75 30s-5 7-5 10.5a5 5 0 0 0 10 0C80 37 75 30 75 30Z" fill="#fff" stroke="#3F7BFF" stroke-width="2"/>
+  <ellipse cx="46" cy="80" rx="3.6" ry="4.4" fill="#17211C"/>
+  <path d="M75 30s-5 7-5 10.5a5 5 0 0 0 10 0C80 37 75 30 75 30Z" fill="#fff" stroke="#2FB58A" stroke-width="2"/>
 </svg>

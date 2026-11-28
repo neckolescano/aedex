@@ -1,10 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- Happy: closed ^ ^ eyes, big smile, both arms up, one small sparkle. -->
-  <path fill="none" stroke="#3F7BFF" stroke-width="6" stroke-linecap="round" d="M74 70l8-9M18 70l-8-9"/>
-  <path fill="#3F7BFF" d="M46 6S14 44 14 64a32 32 0 0 0 64 0C78 44 46 6 46 6Z"/>
+  <path fill="none" stroke="#2FB58A" stroke-width="6" stroke-linecap="round" d="M74 70l8-9M18 70l-8-9"/>
+  <path fill="#2FB58A" d="M46 6S14 44 14 64a32 32 0 0 0 64 0C78 44 46 6 46 6Z"/>
   <ellipse cx="29" cy="50" rx="4" ry="9" fill="#fff" opacity=".45" transform="rotate(22 29 50)"/>
-  <path d="M30 65q6-9 12 0M50 65q6-9 12 0" fill="none" stroke="#13204A" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M30 65q6-9 12 0M50 65q6-9 12 0" fill="none" stroke="#17211C" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
   <ellipse cx="26" cy="74" rx="5" ry="3" fill="#FF8FA3" opacity=".85"/><ellipse cx="66" cy="74" rx="5" ry="3" fill="#FF8FA3" opacity=".85"/>
-  <path d="M36 73q10 15 20 0Z" fill="#13204A" stroke="#13204A" stroke-width="2" stroke-linejoin="round"/>
-  <path d="M82 14l2.6 6.4 6.4 2.6-6.4 2.6-2.6 6.4-2.6-6.4-6.4-2.6 6.4-2.6Z" fill="#FFD84D" stroke="#13204A" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M36 73q10 15 20 0Z" fill="#17211C" stroke="#17211C" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M82 14l2.6 6.4 6.4 2.6-6.4 2.6-2.6 6.4-2.6-6.4-6.4-2.6 6.4-2.6Z" fill="#FFD84D" stroke="#17211C" stroke-width="2" stroke-linejoin="round"/>
 </svg>

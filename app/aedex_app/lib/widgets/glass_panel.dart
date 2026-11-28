@@ -22,8 +22,7 @@ class GlassPanel extends StatelessWidget {
   /// Smoky glass for dark screens (Hotspots) instead of frosted white.
   final bool dark;
 
-  /// A faint skyWash tint and a navy shadow. Off gives plain white glass
-  /// with a grey shadow (the tab bar), so the butter tab stands alone.
+  /// A green-tinted shadow. Off gives a neutral grey shadow (the tab bar), so the butter tab stands alone.
   final bool tinted;
 
   final Widget child;
@@ -48,7 +47,7 @@ class GlassPanel extends StatelessWidget {
               color: dark
                   ? const Color(0x66000000)
                   : tinted
-                  ? const Color(0x2913204A)
+                  ? const Color(0x29102219)
                   : const Color(0x24000000),
               blurRadius: 30,
               offset: const Offset(0, 10),
@@ -68,7 +67,7 @@ class GlassPanel extends StatelessWidget {
                   colors: dark
                       ? const [Color(0x29FFFFFF), Color(0x0DFFFFFF)]
                       : tinted
-                      ? const [Color(0xC7FFFFFF), Color(0x8CEAF2FF)]
+                      ? const [Color(0xC7FFFFFF), Color(0x85FFFFFF)]
                       : const [Color(0xC7FFFFFF), Color(0x85FFFFFF)],
                 ),
                 border: Border.all(

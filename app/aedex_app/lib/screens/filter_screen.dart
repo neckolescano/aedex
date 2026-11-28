@@ -361,7 +361,7 @@ class _StatusTile extends StatelessWidget {
                           border: Border.all(
                             color: selected
                                 ? Colors.white
-                                : const Color(0x591F3FBF),
+                                : const Color(0x5914402F),
                             width: 1.5,
                           ),
                         ),

@@ -195,7 +195,7 @@ class _PropsOnDark extends ColorMapper {
 
 /// The logo lockup: Patak followed by "aedex" in Lilita One. Built in
 /// Flutter, not as SVG text, because flutter_svg cannot load Google Fonts.
-/// Cobalt on light backgrounds, butter on ink backgrounds.
+/// Forest green on light backgrounds, butter on ink backgrounds.
 class PatakLogo extends StatelessWidget {
   const PatakLogo({super.key, this.height = 36, this.onDark = false});
 
@@ -219,7 +219,7 @@ class PatakLogo extends StatelessWidget {
               TextStyle(
                 fontSize: height * 0.78,
                 height: 1,
-                color: onDark ? AedexColors.butter : AedexColors.cobalt,
+                color: onDark ? AedexColors.butter : AedexColors.forest,
               ),
             ),
           ),

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Launch screen before Android 12: cobalt with the Patak submark in the
+<!-- Launch screen before Android 12: deep green with the Patak submark in the
      middle. Android 12 and newer use values-v31/styles.xml instead. -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/patak_cobalt" />
+    <item android:drawable="@color/patak_forest" />
     <item
         android:width="200dp"
         android:height="200dp"

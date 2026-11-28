@@ -555,7 +555,7 @@ class BoxPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.5
       ..color = const Color(0xFFFFD66B);
-    final labelFill = Paint()..color = const Color(0xB30B1330);
+    final labelFill = Paint()..color = const Color(0xB30B120E);
     final labelEdge = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
