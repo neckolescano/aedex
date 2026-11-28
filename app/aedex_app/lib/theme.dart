@@ -5,23 +5,23 @@ import 'models/scan.dart';
 
 /// Colours shared by the whole app: the Patak brand plus the risk colours.
 class AedexColors {
-  // Patak brand. Contrast rule: never put butter text on white or skyWash;
-  // on a butter background, use ink text.
-  static const cobalt = Color(0xFF1F3FBF); // primary, buttons, headings
-  static const patakBlue = Color(0xFF3F7BFF); // mascot body, accents
-  static const butter = Color(0xFFFFD84D); // highlight panels, active tab
-  static const skyWash = Color(0xFFEAF2FF); // background, glass tint
-  static const ink = Color(0xFF13204A); // text, mascot eyes
+  // Green theme (the app's original colours) with the Patak mascot.
+  // Contrast rule: never put butter text on white or sage; on a butter
+  // background, use ink text.
+  static const forest = Color(0xFF14402F); // primary, buttons, headings
+  static const patakGreen = Color(0xFF2FB58A); // mascot body, accents
+  static const butter = Color(0xFFFFD84D); // highlights, submark
+  static const sage = Color(0xFFE9EEE6); // scaffold background
+  static const ink = Color(0xFF17211C); // text, mascot eyes
   static const blush = Color(0xFFFF8FA3); // mascot cheeks only
 
-  /// The main brand colour. Kept as a second name for [cobalt] so every
-  /// place that already says `brand` turns Patak blue without an edit.
-  static const brand = cobalt;
+  /// The main brand colour, a second name for [forest].
+  static const brand = forest;
 
-  // Neutrals, tinted blue to sit with the Patak colours.
-  static const muted = Color(0xFF4A5578);
-  static const surfaceMuted = Color(0xFFF2F6FD);
-  static const line = Color(0xFFDCE4F2);
+  // Neutrals, tinted green.
+  static const muted = Color(0xFF4F5A54);
+  static const surfaceMuted = Color(0xFFF3F5F1);
+  static const line = Color(0xFFE3E7E1);
 
   // Risk colours carry meaning, not brand: they stay the same.
   static const clear = Color(0xFF2F8F5B); // 0 containers
@@ -46,13 +46,13 @@ ThemeData buildAedexTheme({bool useGoogleFont = true}) {
   final base = ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: AedexColors.cobalt,
-      primary: AedexColors.cobalt,
-      secondary: AedexColors.patakBlue,
+      seedColor: AedexColors.forest,
+      primary: AedexColors.forest,
+      secondary: AedexColors.patakGreen,
       tertiary: AedexColors.butter,
       onTertiary: AedexColors.ink,
     ),
-    scaffoldBackgroundColor: AedexColors.skyWash,
+    scaffoldBackgroundColor: AedexColors.sage,
   );
   // google_fonts 9 builds on the new material_ui package, so its own
   // TextTheme helper returns a different TextTheme type. Styling each
@@ -82,7 +82,7 @@ ThemeData buildAedexTheme({bool useGoogleFont = true}) {
   return base.copyWith(
     textTheme: text.apply(
       bodyColor: AedexColors.ink,
-      displayColor: AedexColors.cobalt,
+      displayColor: AedexColors.forest,
     ),
     // Pill-shaped buttons, as in the design.
     filledButtonTheme: FilledButtonThemeData(
@@ -106,17 +106,17 @@ ThemeData buildAedexTheme({bool useGoogleFont = true}) {
 }
 
 /// A heading in Lilita One. The screen gives its own size (and colour,
-/// if not cobalt); the font comes from the theme's headline style, so
+/// if not forest); the font comes from the theme's headline style, so
 /// tests that turn Google Fonts off still work.
 TextStyle aedexHeading(BuildContext context, TextStyle style) =>
     Theme.of(context).textTheme.headlineSmall!.merge(style);
 
-/// Light text on dark glass (Hotspots): a deep navy made from Patak ink.
+/// Light text on dark glass (Hotspots).
 class AedexDark {
-  static const ground = Color(0xFF0B1330);
-  static const text = Color(0xFFF2F5FF);
-  static const muted = Color(0xFFB8C3E0);
+  static const ground = Color(0xFF0C1511);
+  static const text = Color(0xFFF2F5F3);
+  static const muted = Color(0xFFB9C9C0);
 
-  /// Smoky ink glass for markers and chips on the dark map.
-  static const glass = Color(0xD10D1638);
+  /// Smoky glass for markers and chips on the dark map.
+  static const glass = Color(0xD10E1713);
 }

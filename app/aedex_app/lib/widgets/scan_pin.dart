@@ -46,7 +46,7 @@ class ScanPin extends StatelessWidget {
             ),
             boxShadow: const [
               BoxShadow(
-                color: Color(0x4713204A),
+                color: Color(0x47141E19),
                 blurRadius: 6,
                 offset: Offset(0, 2),
               ),

@@ -151,8 +151,7 @@ class _HotspotsScreenState extends State<HotspotsScreen> {
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
                             value: _heat,
-                            activeTrackColor: AedexColors.butter,
-                            activeThumbColor: AedexColors.ink,
+                            activeTrackColor: AedexColors.patakGreen,
                             onChanged: (v) => setState(() => _heat = v),
                           ),
                         ],

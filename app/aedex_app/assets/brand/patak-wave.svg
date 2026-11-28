@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
   <!-- Wave: one arm raised and waving, the other down, open eyes, smile. -->
-  <path fill="none" stroke="#3F7BFF" stroke-width="6" stroke-linecap="round" d="M73 62l11-17M19 74l-7 6"/>
-  <path id="prop" fill="none" stroke="#13204A" stroke-width="2.4" stroke-linecap="round" opacity=".7" d="M90 34q4 5 2 11M95 28q7 8 3 18"/>
-  <path fill="#3F7BFF" d="M46 6S14 44 14 64a32 32 0 0 0 64 0C78 44 46 6 46 6Z"/>
+  <path fill="none" stroke="#2FB58A" stroke-width="6" stroke-linecap="round" d="M73 62l11-17M19 74l-7 6"/>
+  <path id="prop" fill="none" stroke="#17211C" stroke-width="2.4" stroke-linecap="round" opacity=".7" d="M90 34q4 5 2 11M95 28q7 8 3 18"/>
+  <path fill="#2FB58A" d="M46 6S14 44 14 64a32 32 0 0 0 64 0C78 44 46 6 46 6Z"/>
   <ellipse cx="29" cy="50" rx="4" ry="9" fill="#fff" opacity=".45" transform="rotate(22 29 50)"/>
   <ellipse cx="36" cy="62" rx="7" ry="8" fill="#fff"/><ellipse cx="56" cy="62" rx="7" ry="8" fill="#fff"/>
-  <circle cx="37" cy="63" r="4.2" fill="#13204A"/><circle cx="57" cy="63" r="4.2" fill="#13204A"/>
+  <circle cx="37" cy="63" r="4.2" fill="#17211C"/><circle cx="57" cy="63" r="4.2" fill="#17211C"/>
   <circle cx="38.6" cy="61.4" r="1.4" fill="#fff"/><circle cx="58.6" cy="61.4" r="1.4" fill="#fff"/>
   <ellipse cx="26" cy="74" rx="5" ry="3" fill="#FF8FA3" opacity=".85"/><ellipse cx="66" cy="74" rx="5" ry="3" fill="#FF8FA3" opacity=".85"/>
-  <path d="M39 75q7 9 14 0" fill="none" stroke="#13204A" stroke-width="3" stroke-linecap="round"/>
+  <path d="M39 75q7 9 14 0" fill="none" stroke="#17211C" stroke-width="3" stroke-linecap="round"/>
 </svg>

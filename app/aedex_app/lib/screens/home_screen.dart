@@ -186,7 +186,7 @@ class _ProgressCard extends StatelessWidget {
                     strokeWidth: 8,
                     strokeCap: StrokeCap.round,
                     color: AedexColors.clear,
-                    backgroundColor: const Color(0x1F1F3FBF),
+                    backgroundColor: const Color(0x1F14402F),
                   ),
                   Center(
                     child: Container(
@@ -196,7 +196,7 @@ class _ProgressCard extends StatelessWidget {
                         shape: BoxShape.circle,
                         color: Color(0xCCFFFFFF),
                         boxShadow: [
-                          BoxShadow(color: Color(0x1F13204A), blurRadius: 8),
+                          BoxShadow(color: Color(0x1F102219), blurRadius: 8),
                         ],
                       ),
                       alignment: Alignment.center,

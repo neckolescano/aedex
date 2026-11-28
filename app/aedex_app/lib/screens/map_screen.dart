@@ -332,7 +332,7 @@ class _Summary extends StatelessWidget {
     );
 
     Widget divider() =>
-        Container(width: 1, height: 18, color: const Color(0x291F3FBF));
+        Container(width: 1, height: 18, color: const Color(0x2914402F));
 
     final containers = scans.fold(0, (n, s) => n + s.totalContainers);
     final high = scans.where((s) => s.risk == RiskLevel.high).length;

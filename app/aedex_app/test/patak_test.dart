@@ -108,7 +108,7 @@ void main() {
     expect(find.byType(Patak), findsOneWidget);
     expect(find.bySemanticsLabel('Aedex'), findsOneWidget);
     final style = tester.widget<Text>(find.text('aedex')).style!;
-    expect(style.color, AedexColors.cobalt);
+    expect(style.color, AedexColors.forest);
 
     await tester.pumpWidget(_host(const PatakLogo(onDark: true)));
     expect(
